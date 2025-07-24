@@ -50,10 +50,11 @@ const GAMES: Game[] = [
   { id: 5, name: 'Թիմային խաղ', points: { first: 35, second: 20, third: 10 } },
 ];
 
+
 const TEAMS: Team[] = [
-  { id: 1, name: 'Ջրում', color: 'from-cyan-400 to-blue-500', icon: '💧' },
-  { id: 2, name: 'Ցամաքում', color: 'from-emerald-500 to-teal-600', icon: '🏔️' },
-  { id: 3, name: 'Օդում', color: 'from-sky-400 to-indigo-500', icon: '☁️' }
+  { id: 1, name: 'Սևանի Պահապաններ', color: 'from-cyan-400 to-blue-500', icon: '🌊' },
+  { id: 2, name: 'Ֆինանսական Հանճարներ', color: 'from-blue-500 to-indigo-600', icon: '🏛️' },
+  { id: 3, name: 'ԱԶԲ Նորարարներ', color: 'from-emerald-400 to-teal-600', icon: '🏦' }
 ];
 
 export function GameProvider({ children }: { children: ReactNode }) {
