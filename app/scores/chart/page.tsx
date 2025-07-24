@@ -114,7 +114,7 @@ export default function ChartPage() {
               </div>
               <div className="text-2xl text-sky-900">
                 Հաղթողը: <span className={`font-black text-3xl bg-clip-text text-transparent bg-gradient-to-r ${winner.color}`}>
-                  {winner.name}
+                  {teamIcons[winner.id]} {winner.name}
                 </span>
               </div>
             </div>
@@ -134,7 +134,7 @@ export default function ChartPage() {
                         <Trophy className="w-8 h-8 text-yellow-500 animate-bounce" />
                         {isAllGamesCompleted ? 'Հաղթող:' : 'Հաղթում է:'} 
                         <span className={`bg-clip-text text-transparent bg-gradient-to-r ${leaderTeam.color}`}>
-                          {teamIcons[leaderTeam.id]} {leaderTeam.name}
+                          {leaderTeam.name}
                         </span>
                         ({leaderScore} միավոր)
                       </div>
