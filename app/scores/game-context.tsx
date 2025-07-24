@@ -51,9 +51,9 @@ const GAMES: Game[] = [
 ];
 
 const TEAMS: Team[] = [
-  { id: 1, name: 'Ջրում', color: 'from-blue-400 to-cyan-600', icon: '💧' },
-  { id: 2, name: 'Ցամաքում', color: 'from-emerald-400 to-green-600', icon: '🏔️' },
-  { id: 3, name: 'Օդում', color: 'from-purple-400 to-pink-600', icon: '☁️' }
+  { id: 1, name: 'Ջրում', color: 'from-cyan-400 to-blue-500', icon: '💧' },
+  { id: 2, name: 'Ցամաքում', color: 'from-emerald-500 to-teal-600', icon: '🏔️' },
+  { id: 3, name: 'Օդում', color: 'from-sky-400 to-indigo-500', icon: '☁️' }
 ];
 
 export function GameProvider({ children }: { children: ReactNode }) {
