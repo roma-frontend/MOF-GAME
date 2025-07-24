@@ -114,7 +114,7 @@ export default function ChartPage() {
               </div>
               <div className="text-2xl text-sky-900">
                 Հաղթողը: <span className={`font-black text-3xl bg-clip-text text-transparent bg-gradient-to-r ${winner.color}`}>
-                  {teamIcons[winner.id]} {winner.name}
+                  {winner.name}
                 </span>
               </div>
             </div>

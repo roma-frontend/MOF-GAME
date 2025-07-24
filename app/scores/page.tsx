@@ -147,7 +147,7 @@ export default function ScoresPage() {
                             <button
                               key={team.id}
                               onClick={() => handleTeamSelect(game.id, team.id, place)}
-                              className={`w-full py-4 px-6 rounded-xl font-bold transition-all duration-300 transform hover:scale-105 ${
+                              className={`w-full py-4 px-6 rounded-[8px] font-bold transition-all duration-300 transform hover:scale-105 ${
                                 isSelected
                                   ? `bg-gradient-to-r ${team.color} text-white shadow-lg`
                                   : 'glass hover:shadow-lg text-sky-900'
