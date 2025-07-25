@@ -1,10 +1,17 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Trophy, Medal, ArrowRight, Eye, RotateCcw, Save, ChevronRight, Sparkles, Users, Award, Target, X, Check } from 'lucide-react';
+import { Trophy, Medal, ArrowRight, Eye, RotateCcw, Save, ChevronRight, Sparkles, Users, Award, Target, X, Check, Fish, Trees, Bird } from 'lucide-react';
 import Link from 'next/link';
 import { useGame } from './game-context';
 import { toast } from 'sonner';
+
+// Маппинг строковых названий иконок к React компонентам
+const iconMap = {
+  Fish: Fish,
+  Trees: Trees,
+  Bird: Bird
+};
 
 export default function ScoresPage() {
   const { games, teams, gameResults, totalScores, setTeamPlace, resetScores } = useGame();
@@ -34,9 +41,11 @@ export default function ScoresPage() {
     const team = teams.find(t => t.id === teamId);
     const game = games.find(g => g.id === gameId);
     
+    const TeamIcon = iconMap[team?.icon as keyof typeof iconMap];
+    
     toast.success(`${team?.name} թիմը զբաղեցրեց ${placeName} տեղը`, {
       description: `${game?.name} խաղում`,
-      icon: team?.icon,
+      icon: TeamIcon ? <TeamIcon className="w-4 h-4" /> : '🏆',
       duration: 3000
     });
   };
@@ -185,20 +194,25 @@ export default function ScoresPage() {
 
           {/* Current scores summary */}
           <div className="grid grid-cols-3 gap-4 max-w-3xl mx-auto mb-8">
-            {teams.map((team, index) => (
-              <div
-                key={team.id}
-                className={`glass rounded-xl p-4 shadow-lg transform transition-all duration-700 hover:scale-105`}
-                style={{ animationDelay: `${index * 100}ms` }}
-              >
-                <div className="text-3xl mb-2">{team.icon}</div>
-                <h3 className="text-lg font-bold text-sky-900">{team.name}</h3>
-                <div className="text-3xl font-black text-sky-800 mt-2">
-                  {totalScores[team.id] || 0}
-                  <span className="text-sm font-normal text-sky-600 ml-1">միավոր</span>
+            {teams.map((team, index) => {
+              const TeamIcon = iconMap[team.icon as keyof typeof iconMap];
+              return (
+                <div
+                  key={team.id}
+                  className={`glass rounded-xl p-4 shadow-lg transform transition-all duration-700 hover:scale-105`}
+                  style={{ animationDelay: `${index * 100}ms` }}
+                >
+                  <div className="text-3xl mb-2">
+                    {TeamIcon && <TeamIcon className="w-12 h-12 mx-auto text-sky-700" />}
+                  </div>
+                  <h3 className="text-lg font-bold text-sky-900">{team.name}</h3>
+                  <div className="text-3xl font-black text-sky-800 mt-2">
+                    {totalScores[team.id] || 0}
+                    <span className="text-sm font-normal text-sky-600 ml-1">միավոր</span>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 
@@ -277,6 +291,7 @@ export default function ScoresPage() {
                             {teams.map((team) => {
                               const isSelected = result[place] === team.id;
                               const isOtherPlace = Object.values(result).includes(team.id) && !isSelected;
+                              const TeamIcon = iconMap[team.icon as keyof typeof iconMap];
                               
                               return (
                                 <button
@@ -296,7 +311,11 @@ export default function ScoresPage() {
                                   title={`${team.name}${isOtherPlace ? ' (արդեն ընտրված է)' : ''}`}
                                 >
                                   <span className={isSelected ? 'animate-bounce' : ''}>
-                                    {team.icon}
+                                    {TeamIcon && (
+                                      <TeamIcon 
+                                        className={`w-8 h-8 ${isSelected ? 'text-white' : 'text-sky-700'}`} 
+                                      />
+                                    )}
                                   </span>
                                   {isSelected && (
                                     <div className="absolute -top-1 -right-1">

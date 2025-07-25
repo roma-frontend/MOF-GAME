@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Trophy, Star, Crown, Sparkles, X } from 'lucide-react';
+import { Trophy, Star, Crown, Sparkles, X, Fish, Trees, Bird } from 'lucide-react';
 import { toast } from 'sonner';
+import { useGame } from './game-context';
 
 interface CelebrationProps {
   winner: {
@@ -25,17 +26,28 @@ interface Confetti {
   rotationSpeed: number;
 }
 
+// Маппинг строковых названий иконок к React компонентам
+const iconMap = {
+  Fish: Fish,
+  Trees: Trees,
+  Bird: Bird
+};
+
 export default function Celebration({ winner, isVisible, onClose }: CelebrationProps) {
   const [confetti, setConfetti] = useState<Confetti[]>([]);
   const [showFireworks, setShowFireworks] = useState(false);
+  const { teams } = useGame();
+
+  // Получаем компонент иконки
+  const IconComponent = iconMap[winner.icon as keyof typeof iconMap];
 
   useEffect(() => {
     if (isVisible) {
       setShowFireworks(true);
-      
+
       const colors = ['#0891b2', '#3b82f6', '#10b981', '#fbbf24', '#f87171', '#a78bfa', '#34d399', '#60a5fa'];
       const newConfetti: Confetti[] = [];
-      
+
       for (let i = 0; i < 200; i++) {
         newConfetti.push({
           id: i,
@@ -49,11 +61,11 @@ export default function Celebration({ winner, isVisible, onClose }: CelebrationP
           rotationSpeed: (Math.random() - 0.5) * 15
         });
       }
-      
+
       setConfetti(newConfetti);
 
       const animateConfetti = () => {
-        setConfetti(prev => 
+        setConfetti(prev =>
           prev.map(piece => ({
             ...piece,
             x: piece.x + piece.velocityX,
@@ -65,12 +77,12 @@ export default function Celebration({ winner, isVisible, onClose }: CelebrationP
       };
 
       const interval = setInterval(animateConfetti, 16);
-      
+
       toast.success('🏆 Շնորհավորում ենք հաղթողին!', {
         description: `${winner.name} թիմը դարձավ չեմպիոն!`,
         duration: 10000,
       });
-      
+
       const timeout = setTimeout(() => {
         onClose();
       }, 30000);
@@ -138,30 +150,29 @@ export default function Celebration({ winner, isVisible, onClose }: CelebrationP
 
         {/* Congratulations Text */}
         <div className="mb-8 text-center">
-          <h1 className="text-5xl md:text-7xl font-black text-white mb-6 animate-pulse">
-            ՇՆՈՐՀԱՎՈՐՈՒՄ ԵՆՔ!
+          <h1 className="text-9xl font-black text-white mb-6 animate-pulse">
+            Թիմ՝ {winner.name}
           </h1>
           <h2 className="text-3xl md:text-5xl font-bold mb-6">
-            <span className={`bg-clip-text text-transparent bg-gradient-to-r ${winner.color} animate-gradient-shift`}>
-              Հաղթեց {winner.name} թիմը
-            </span>
           </h2>
         </div>
 
         {/* Winner Icon */}
         <div className="mb-8">
-          <div className="text-[160px] animate-float mb-6 filter drop-shadow-2xl">{winner.icon}</div>
-          <div className={`inline-flex items-center gap-4 bg-gradient-to-r ${winner.color} text-white font-bold py-6 px-12 rounded-full text-2xl shadow-2xl transform hover:scale-105 transition-all duration-300`}>
-            <Trophy className="w-10 h-10 animate-spin" style={{ animationDuration: '3s' }} />
-            <span className="text-3xl font-black">ՉԵՄՊԻՈՆ</span>
-            <Trophy className="w-10 h-10 animate-spin" style={{ animationDirection: 'reverse', animationDuration: '3s' }} />
+          <div className="mb-6 filter drop-shadow-2xl">
+            {IconComponent && (
+              <div 
+                className={`w-40 h-40 mx-auto animate-float bg-gradient-to-r ${winner.color} rounded-full flex items-center justify-center shadow-2xl`}
+              >
+                <IconComponent className="w-32 h-32 text-white" />
+              </div>
+            )}
           </div>
-        </div>
-
-        {/* Decorative Text */}
-        <div className="text-white/80 text-xl mb-8 max-w-2xl mx-auto">
-          <p className="mb-2">🎊 Դուք ապացուցեցիք ձեր գերազանցությունը</p>
-          <p>Սևանի, ՖՆ-ի և ԱԶԲ-ի մարտահրավերներում!</p>
+          <div className={`inline-flex items-center gap-4 bg-gradient-to-r ${winner.color} text-white font-bold py-6 px-12 rounded-full text-2xl shadow-2xl transform hover:scale-105 transition-all duration-300`}>
+            {IconComponent && <IconComponent className="w-10 h-10 animate-spin" style={{ animationDuration: '3s' }} />}
+            <span className="text-3xl font-black">ՉԵՄՊԻՈՆ</span>
+            {IconComponent && <IconComponent className="w-10 h-10 animate-spin" style={{ animationDirection: 'reverse', animationDuration: '3s' }} />}
+          </div>
         </div>
 
         {/* Additional Effects */}

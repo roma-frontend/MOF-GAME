@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Trophy, Users, Star, Zap, ArrowRight, Play, Medal, Target, Award, Sparkles, Flame, Shield, Swords, Waves, Building2, Landmark } from 'lucide-react';
+import { Trophy, Users, Star, Zap, ArrowRight, Play, Medal, Target, Award, Sparkles, Flame, Shield, Swords, Waves, Building2, Landmark, UsersRound, FishSymbol, Trees, Bird, Flag } from 'lucide-react';
 import Link from 'next/link';
 import { toast } from 'sonner';
 
@@ -40,24 +40,21 @@ export default function HomePage() {
   const teams = [
     { 
       name: 'Ջրում', 
-      icon: <Waves className="w-16 h-16" />, 
+      icon: <FishSymbol className="w-16 h-16" />, 
       color: 'from-cyan-400 to-blue-500',
       bgColor: 'from-cyan-50 via-blue-50 to-sky-100',
-      description: 'Ջրային աշխարհի հերոսներ',
     },
     { 
       name: 'Ցամաքում', 
-      icon: <Landmark className="w-16 h-16" />, 
-      color: 'from-blue-500 to-indigo-600',
+      icon: <Trees className="w-16 h-16 text-green-700" />, 
+      color: 'from-teal-700 to-green-500',
       bgColor: 'from-blue-50 via-indigo-50 to-purple-100',
-      description: 'ՀՀ ՖՆ ռազմավարներ',
     },
     { 
       name: 'Օդում', 
-      icon: <Building2 className="w-16 h-16" />, 
-      color: 'from-emerald-400 to-teal-600',
+      icon: <Bird className="w-16 h-16 text-orange-600" />, 
+      color: 'from-orange-400 to-red-600',
       bgColor: 'from-emerald-50 via-teal-50 to-green-100',
-      description: 'Զարգացման առաջնորդներ',
     }
   ];
 
@@ -69,7 +66,6 @@ export default function HomePage() {
       difficulty: 'Միջին', 
       color: 'from-cyan-400 to-blue-500',
       bgColor: 'bg-gradient-to-br from-cyan-50 to-blue-100',
-      description: 'Հայաստանի մարգարիտը՝ Սևան լիճը'
     },
     { 
       name: 'Քարհավաք', 
@@ -78,7 +74,6 @@ export default function HomePage() {
       difficulty: 'Բարձր', 
       color: 'from-purple-400 to-pink-500',
       bgColor: 'bg-gradient-to-br from-purple-50 to-pink-100',
-      description: 'Թանկարժեք քարերի աշխարհ'
     },
     { 
       name: 'Ճանաչիր ՖՆ', 
@@ -87,7 +82,6 @@ export default function HomePage() {
       difficulty: 'Հեշտ', 
       color: 'from-blue-500 to-indigo-600',
       bgColor: 'bg-gradient-to-br from-blue-50 to-indigo-100',
-      description: 'Ֆինանսների նախարարություն'
     },
     { 
       name: 'Ճանաչիր ԱԶԲ', 
@@ -96,7 +90,6 @@ export default function HomePage() {
       difficulty: 'Հեշտ', 
       color: 'from-emerald-400 to-teal-600',
       bgColor: 'bg-gradient-to-br from-emerald-50 to-teal-100',
-      description: 'Ասիական զարգացման բանկ'
     },
     { 
       name: 'Թիմային խաղ', 
@@ -105,7 +98,6 @@ export default function HomePage() {
       difficulty: 'Բարձր', 
       color: 'from-orange-400 to-red-500',
       bgColor: 'bg-gradient-to-br from-orange-50 to-red-100',
-      description: 'Համագործակցության ճանապարհ'
     }
   ];
 
@@ -143,29 +135,28 @@ export default function HomePage() {
         <div className={`text-center mb-6 transform transition-all duration-1000 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
           <div className="relative inline-block mb-6">
             <div className="absolute inset-0 animate-ping">
-              <Trophy className="w-24 h-24 text-yellow-400/30" />
+              <Trophy className="w-24 h-24 text-blue-400/30" />
             </div>
-            <Trophy className="relative w-24 h-24 text-yellow-400 animate-float" />
+            <Trophy className="relative w-24 h-24 text-blue-400 animate-float" />
             <Sparkles className="absolute -top-4 -right-4 w-12 h-12 text-yellow-400 animate-spin" />
             <Star className="absolute -top-2 -left-4 w-8 h-8 text-yellow-400 animate-pulse" />
           </div>
           
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-black mb-6 relative">
+          <h1 className="text-4xl font-black mb-12 relative">
             <span className="absolute inset-0 bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-600 blur-lg">
-              ՄԵԾ ԽԱՂ
+              MoF - ADB Joint Environmental Reatreat  <br /><span className="text-3xl">26 July 2025</span>
             </span>
             <span className="relative bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-600">
-              ՄԵԾ ԽԱՂ
+              MoF - ADB Joint Environmental Reatreat  <br /><span className="text-3xl">26 July 2025</span>
             </span>
           </h1>
         </div>
 
         {/* Teams Carousel */}
         <div className={`mb-8 transform transition-all duration-1000 delay-300 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-          <h2 className="text-3xl md:text-4xl font-bold text-sky-900 text-center mb-8 flex items-center justify-center gap-3">
-            <Shield className="w-10 h-10 text-cyan-500" />
+          <h2 className="text-3xl font-bold text-sky-900 text-center mb-8 flex items-center justify-center gap-3">
+            <UsersRound className="w-14 h-14 text-blue-400" />
             Մրցակից թիմեր
-            <Swords className="w-10 h-10 text-cyan-500" />
           </h2>
           
           {/* Active Team Display */}
@@ -178,16 +169,15 @@ export default function HomePage() {
                 }`}
               >
                 <div 
-                  className="text-center glass rounded-3xl p-8 shadow-2xl transform hover:scale-105 transition-transform cursor-pointer"
+                  className="flex flex-col items-center text-center glass rounded-3xl p-8 shadow-2xl transform hover:scale-105 transition-transform cursor-pointer"
                   onMouseLeave={() => setHoveredTeam(null)}
                 >
-                  <div className={`text-sky-600 mb-4 transform ${hoveredTeam === index ? 'scale-105 rotate-6' : ''} transition-all duration-300`}>
+                  <div className={`text-sky-600 mb-4 transform ${hoveredTeam === index ? 'scale-110 rotate-6' : ''} transition-all duration-300`}>
                     {team.icon}
                   </div>
-                  <h3 className={`text-4xl font-black mb-2 bg-clip-text text-transparent bg-gradient-to-r ${team.color}`}>
+                  <h3 className={`text-5xl font-black mb-2 bg-clip-text text-transparent bg-gradient-to-r ${team.color}`}>
                     {team.name}
                   </h3>
-                  <p className="text-xl text-sky-700 mb-2">{team.description}</p>
                 </div>
               </div>
             ))}
@@ -197,7 +187,7 @@ export default function HomePage() {
         {/* Games Grid */}
         <div className={`mb-8 transform transition-all duration-1000 delay-500 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
           <h2 className="text-3xl md:text-4xl font-bold text-sky-900 text-center mb-8 flex items-center justify-center gap-3">
-            <Target className="w-10 h-10 text-emerald-500 animate-spin" style={{ animationDuration: '3s' }} />
+            <Flag className="w-10 h-10 text-emerald-500 animate-bounce" style={{ animationDuration: '3s' }} />
             Մարտահրավերներ
           </h2>
           
@@ -208,7 +198,7 @@ export default function HomePage() {
                 className={`group relative overflow-hidden glass rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-500 hover:scale-105 hover:-translate-y-2 cursor-pointer ${game.bgColor}`}
                 style={{ animationDelay: `${index * 100}ms` }}
                 onClick={() => toast(`${game.name}`, { 
-                  description: `${game.description} | Դժվարություն: ${game.difficulty} | Միավորներ: ${game.points}`,
+                  description: ` | Դժվարություն: ${game.difficulty} | Միավորներ: ${game.points}`,
                   icon: game.icon 
                 })}
               >
@@ -238,9 +228,6 @@ export default function HomePage() {
                       {game.difficulty === 'Միջին' && <Zap className="w-3 h-3" />}
                       {game.difficulty === 'Հեշտ' && <Star className="w-3 h-3" />}
                       {game.difficulty}
-                    </div>
-                    <div className="text-xs text-sky-600 mt-2 opacity-80 group-hover:opacity-100 transition-opacity">
-                      {game.description}
                     </div>
                   </div>
                 </div>

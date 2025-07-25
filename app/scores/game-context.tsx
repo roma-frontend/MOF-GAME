@@ -1,5 +1,6 @@
 'use client';
 
+import { Bird, Fish, Trees } from 'lucide-react';
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 // Типы данных
@@ -91,10 +92,11 @@ const GAMES: Game[] = [
 ];
 
 const TEAMS: Team[] = [
-  { id: 1, name: 'Ջրում', color: 'from-cyan-400 to-blue-500', icon: '🌊' },
-  { id: 2, name: 'Ցամաքում', color: 'from-blue-500 to-indigo-600', icon: '🏛️' },
-  { id: 3, name: 'Օդում', color: 'from-emerald-400 to-teal-600', icon: '🏦' }
+  { id: 1, name: 'Ջրում', color: 'from-cyan-400 to-blue-500', icon: "Fish" },
+  { id: 2, name: 'Ցամաքում', color: 'from-teal-500 to-green-600', icon: "Trees" },
+  { id: 3, name: 'Օդում', color: 'from-blue-400 to-purple-600', icon: "Bird" }
 ];
+
 
 export function GameProvider({ children }: { children: ReactNode }) {
   const [gameResults, setGameResults] = useState<GameResults>({});

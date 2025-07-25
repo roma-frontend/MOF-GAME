@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, JSX } from 'react';
-import { Trophy, Medal, ArrowLeft, Waves, Building2, Landmark, TrendingUp, Clock, Target, Star, Award, Crown, Zap, AlertTriangle, Users, ChevronUp, ChevronDown, Timer, GamepadIcon, BarChart3 } from 'lucide-react';
+import { Trophy, Medal, ArrowLeft, Waves, Building2, Landmark, TrendingUp, Clock, Target, Star, Award, Crown, Zap, AlertTriangle, Users, ChevronUp, ChevronDown, Timer, GamepadIcon, BarChart3, FishSymbol, Trees, Bird } from 'lucide-react';
 import Link from 'next/link';
 import { toast } from 'sonner';
 import { useGame } from '../game-context';
@@ -9,7 +9,7 @@ import Celebration from '../celebration';
 
 export default function ChartPage() {
   const { games, teams, gameResults, totalScores, detailedScores, isAllGamesCompleted, winner } = useGame();
-  
+
   // Initialize animated scores with 0 to avoid hydration mismatch
   const [animatedScores, setAnimatedScores] = useState<{ [teamId: number]: number }>(() => {
     const initial: { [teamId: number]: number } = {};
@@ -18,7 +18,7 @@ export default function ChartPage() {
     });
     return initial;
   });
-  
+
   // Анимированные детальные очки по играм
   const [animatedDetailedScores, setAnimatedDetailedScores] = useState<{ [teamId: number]: { [gameId: number]: number } }>(() => {
     const initial: { [teamId: number]: { [gameId: number]: number } } = {};
@@ -30,7 +30,7 @@ export default function ChartPage() {
     });
     return initial;
   });
-  
+
   const [showCelebration, setShowCelebration] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
   const [selectedTeamHistory, setSelectedTeamHistory] = useState<number | null>(null);
@@ -54,14 +54,14 @@ export default function ChartPage() {
       let animationFrame: number;
       let startTime: number | null = null;
       const duration = 2000;
-      
+
       const animate = (timestamp: number) => {
         if (!startTime) startTime = timestamp;
         const progress = Math.min((timestamp - startTime) / duration, 1);
-        
+
         setAnimatedScores(current => {
           const newScores = { ...current };
-          
+
           Object.entries(targetScores).forEach(([teamId, targetScore]) => {
             const id = parseInt(teamId);
             const startScore = current[id] || 0;
@@ -69,20 +69,20 @@ export default function ChartPage() {
             const easeOutCubic = 1 - Math.pow(1 - progress, 3);
             newScores[id] = Math.round(startScore + diff * easeOutCubic);
           });
-          
+
           return newScores;
         });
 
         // Анимируем детальные очки
         setAnimatedDetailedScores(current => {
           const newDetailedScores = { ...current };
-          
+
           Object.entries(targetDetailedScores).forEach(([teamId, gameScores]) => {
             const teamIdNum = parseInt(teamId);
             if (!newDetailedScores[teamIdNum]) {
               newDetailedScores[teamIdNum] = {};
             }
-            
+
             Object.entries(gameScores).forEach(([gameId, targetScore]) => {
               const gameIdNum = parseInt(gameId);
               const startScore = current[teamIdNum]?.[gameIdNum] || 0;
@@ -91,10 +91,10 @@ export default function ChartPage() {
               newDetailedScores[teamIdNum][gameIdNum] = Math.round(startScore + diff * easeOutCubic);
             });
           });
-          
+
           return newDetailedScores;
         });
-        
+
         if (progress < 1) {
           animationFrame = requestAnimationFrame(animate);
         } else {
@@ -110,9 +110,9 @@ export default function ChartPage() {
           }
         }
       };
-      
+
       animationFrame = requestAnimationFrame(animate);
-      
+
       return () => {
         if (animationFrame) {
           cancelAnimationFrame(animationFrame);
@@ -129,7 +129,7 @@ export default function ChartPage() {
     const sortedTeams = Object.entries(animatedScores)
       .sort(([, a], [, b]) => b - a)
       .map(([id]) => parseInt(id));
-    
+
     return sortedTeams.indexOf(teamId) + 1;
   };
 
@@ -152,10 +152,10 @@ export default function ChartPage() {
         score: topScore
       };
     } else {
-      const tiedTeams = leadingTeams.map(entry => 
+      const tiedTeams = leadingTeams.map(entry =>
         teams.find(t => t.id === entry.teamId)
       ).filter(Boolean);
-      
+
       return {
         type: 'tie' as const,
         teams: tiedTeams,
@@ -166,23 +166,23 @@ export default function ChartPage() {
 
   const getTeamHistory = (teamId: number) => {
     const history: Array<{
-      game: string, 
-      place: number, 
+      game: string,
+      place: number,
       points: number,
       percentage: number,
       gameColor: string,
       opponents: { place: number, teamId: number, teamName: string }[]
     }> = [];
-    
+
     Object.entries(gameResults).forEach(([gameIdStr, result]) => {
       const gameId = parseInt(gameIdStr);
       const game = games.find(g => g.id === gameId);
       if (!game || !result) return;
-      
+
       let place = 0;
       let points = 0;
       const opponents: { place: number, teamId: number, teamName: string }[] = [];
-      
+
       if (result.first === teamId) {
         place = 1;
         points = game.points.first;
@@ -193,7 +193,7 @@ export default function ChartPage() {
         place = 3;
         points = game.points.third;
       }
-      
+
       // Add opponents info
       if (result.first && result.first !== teamId) {
         const team = teams.find(t => t.id === result.first);
@@ -207,50 +207,50 @@ export default function ChartPage() {
         const team = teams.find(t => t.id === result.third);
         if (team) opponents.push({ place: 3, teamId: result.third, teamName: team.name });
       }
-      
+
       if (place > 0) {
         const maxPoints = game.points.first;
         const percentage = Math.round((points / maxPoints) * 100);
-        history.push({ 
-          game: game.name, 
-          place, 
-          points, 
-          percentage, 
+        history.push({
+          game: game.name,
+          place,
+          points,
+          percentage,
           gameColor: game.color,
-          opponents 
+          opponents
         });
       }
     });
-    
+
     return history;
   };
 
   const getTeamTrend = (teamId: number) => {
     const history = getTeamHistory(teamId);
     if (history.length < 2) return { trend: 'stable', change: 0 };
-    
+
     const recentGames = history.slice(-3);
     const olderGames = history.slice(0, -3);
-    
+
     if (olderGames.length === 0) return { trend: 'stable', change: 0 };
-    
+
     const avgRecentPosition = recentGames.reduce((sum, game) => sum + game.place, 0) / recentGames.length;
     const avgOlderPosition = olderGames.reduce((sum, game) => sum + game.place, 0) / olderGames.length;
-    
+
     const change = avgOlderPosition - avgRecentPosition;
-    
+
     if (change > 0.5) return { trend: 'rising', change: Math.round(change * 10) / 10 };
     if (change < -0.5) return { trend: 'falling', change: Math.round(change * 10) / 10 };
     return { trend: 'stable', change: 0 };
   };
 
   const getGameStats = () => {
-    const completedGames = Object.entries(gameResults).filter(([_, result]) => 
+    const completedGames = Object.entries(gameResults).filter(([_, result]) =>
       result && result.first && result.second && result.third
     ).length;
     const totalGames = games.length;
     const progress = (completedGames / totalGames) * 100;
-    
+
     const totalPointsAwarded = Object.entries(gameResults).reduce((sum, [gameIdStr, result]) => {
       const gameId = parseInt(gameIdStr);
       const game = games.find(g => g.id === gameId);
@@ -261,11 +261,11 @@ export default function ChartPage() {
       if (result.third) gamePoints += game.points.third;
       return sum + gamePoints;
     }, 0);
-    
-    const maxPossiblePoints = games.reduce((sum, game) => 
+
+    const maxPossiblePoints = games.reduce((sum, game) =>
       sum + game.points.first + game.points.second + game.points.third, 0
     );
-    
+
     return { completedGames, totalGames, progress, totalPointsAwarded, maxPossiblePoints };
   };
 
@@ -274,7 +274,7 @@ export default function ChartPage() {
     const teamScores = animatedDetailedScores[teamId] || {};
     const stack: Array<{ gameId: number, points: number, percentage: number, color: string, name: string }> = [];
     let cumulativeHeight = 0;
-    
+
     games.forEach(game => {
       const points = teamScores[game.id] || 0;
       if (points > 0) {
@@ -289,14 +289,14 @@ export default function ChartPage() {
         cumulativeHeight += percentage;
       }
     });
-    
+
     return stack;
   };
 
   const teamIcons: { [key: number]: JSX.Element } = {
-    1: <Waves className="w-12 h-12" />,
-    2: <Landmark className="w-12 h-12" />,
-    3: <Building2 className="w-12 h-12" />
+    1: <FishSymbol className="w-12 h-12" />,
+    2: <Trees className="w-12 h-12" />,
+    3: <Bird className="w-12 h-12" />
   };
 
   const leaderInfo = getLeaderInfo();
@@ -328,20 +328,20 @@ export default function ChartPage() {
       {/* Animated Background */}
       <div className="absolute bottom-0 left-0 right-0 h-96 opacity-20">
         <svg className="w-full h-full" viewBox="0 0 1440 320">
-          <path 
-            fill="#0891b2" 
-            fillOpacity="0.5" 
+          <path
+            fill="#0891b2"
+            fillOpacity="0.5"
             d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,138.7C960,139,1056,117,1152,101.3C1248,85,1344,75,1392,69.3L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"
           />
         </svg>
       </div>
-      
+
       <div className="w-full max-w-[1440px] relative z-10">
         <div className="text-center mb-10">
           <h1 className="text-6xl md:text-7xl font-bold text-sky-900 mt-8 mb-6">
             Ընթացիկ հաշիվ
           </h1>
-          
+
           {/* Progress Bar */}
           <div className="mb-6 glass rounded-2xl p-4 shadow-lg">
             <div className="flex items-center justify-between mb-2">
@@ -359,7 +359,7 @@ export default function ChartPage() {
               </div>
             </div>
             <div className="w-full bg-sky-200 rounded-full h-3 overflow-hidden relative">
-              <div 
+              <div
                 className="h-full bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full transition-all duration-1000 ease-out relative"
                 style={{ width: `${gameStats.progress}%` }}
               >
@@ -378,19 +378,18 @@ export default function ChartPage() {
               <span>{showGameBreakdown ? 'Ցույց տալ ընդհանուր' : 'Ցույց տալ ըստ խաղերի'}</span>
             </button>
           </div>
-          
+
           {/* Winner announcement */}
           {isAllGamesCompleted && winners.length > 0 && animationComplete && (
             <div className="mb-6 p-6 glass rounded-3xl shadow-2xl border-2 border-yellow-400/30">
-              <div className="text-3xl text-amber-600 font-bold mb-2 flex items-center justify-center gap-2">
-                <Crown className="w-8 h-8" />
-                🎉 Բոլոր խաղերը ավարտված են! 🎉
-                <Crown className="w-8 h-8" />
+              <div className="text-3xl text-amber-600 font-bold mb-10 flex items-center justify-center gap-2">
+
+                🎉 Բոլոր խաղերը ավարտված են 🎉
               </div>
               {winners.length === 1 ? (
                 <div className="text-2xl text-sky-900">
-                  Հաղթողը: <span className={`font-black text-3xl bg-clip-text text-transparent bg-gradient-to-r ${winners[0].color}`}>
-                    {teamIcons[winners[0].id]} {winners[0].name}
+                  Հաղթողը` <span className={`font-black text-3xl bg-clip-text text-transparent bg-gradient-to-r ${winners[0].color}`}>
+                    {teamIcons[winners[0].id]} Թիմ {winners[0].name}
                   </span>
                 </div>
               ) : (
@@ -408,7 +407,7 @@ export default function ChartPage() {
               )}
             </div>
           )}
-          
+
           {/* Leader Display */}
           {leaderInfo && !isAllGamesCompleted && (
             <div className="mt-6">
@@ -421,10 +420,10 @@ export default function ChartPage() {
                 ) : (
                   <Trophy className="w-8 h-8 text-yellow-500 animate-bounce" />
                 )}
-                
+
                 {leaderInfo.type === 'tie' ? 'Առաջատարներ:' : 'Առաջատարն է:'}
               </div>
-              
+
               <div className="mt-4 flex items-center justify-center gap-4 flex-wrap">
                 {leaderInfo.teams.map((team, index) => team && (
                   <div key={team.id} className="flex items-center gap-2">
@@ -458,7 +457,7 @@ export default function ChartPage() {
               const position = getTeamPosition(team.id);
               const trendInfo = getTeamTrend(team.id);
               const gameStack = createGameStack(team.id);
-              
+
               return (
                 <div key={team.id} className="flex flex-col items-center flex-1 max-w-xs">
                   <div className="relative w-full flex flex-col items-center">
@@ -467,12 +466,12 @@ export default function ChartPage() {
                       <div className="mb-2 relative">
                         {position === 1 && (
                           <div className="relative">
-                            <Trophy className="w-12 h-12 text-yellow-500 animate-spin" style={{ animationDuration: '3s' }} />
+                            <Trophy className="w-14 h-14 text-yellow-400 animate-pulse" style={{ animationDuration: '3s' }} />
                           </div>
                         )}
                         {position === 2 && <Medal className="w-10 h-10 text-gray-400 animate-pulse" />}
                         {position === 3 && <Medal className="w-10 h-10 text-orange-500 animate-pulse" />}
-                        
+
                         {/* Trend indicator */}
                         <div className="absolute -top-2 -right-2">
                           {trendInfo.trend === 'rising' && (
@@ -493,9 +492,9 @@ export default function ChartPage() {
                         </div>
                       </div>
                     )}
-                    
+
                     {/* Score Display */}
-                    <div 
+                    <div
                       className="text-5xl lg:text-6xl font-black text-sky-900 mb-4 cursor-pointer hover:scale-110 transition-transform relative"
                       onClick={() => {
                         setSelectedTeamHistory(team.id);
@@ -509,11 +508,11 @@ export default function ChartPage() {
                     >
                       {score}
                     </div>
-                    
+
                     {/* Bar Chart with Game Breakdown */}
                     <div
                       className="w-full rounded-[1.5rem] shadow-2xl transition-all duration-700 ease-out relative overflow-hidden cursor-pointer hover:scale-105 group"
-                      style={{ 
+                      style={{
                         height: `${Math.max(height * 3.5, 30)}px`,
                         transform: score > 0 ? 'scale(1)' : 'scale(0.8)',
                       }}
@@ -530,7 +529,7 @@ export default function ChartPage() {
                             const segmentHeight = (gameSegment.points / (score || 1)) * 100;
                             const isFirst = segmentIndex === 0;
                             const isLast = segmentIndex === gameStack.length - 1;
-                            
+
                             return (
                               <div
                                 key={gameSegment.gameId}
@@ -546,13 +545,31 @@ export default function ChartPage() {
                                 title={`${gameSegment.name}: ${gameSegment.points} միավոր`}
                               >
                                 <div className="absolute inset-0 bg-white/20 animate-shimmer"></div>
-                                {segmentHeight > 15 && (
-                                  <div className="absolute inset-0 flex items-center justify-center">
-                                    <span className="text-white font-bold text-xs opacity-80">
+
+                                {/* Показываем название и очки для всех сегментов */}
+                                <div className="absolute inset-0 flex items-center justify-center p-1">
+                                  {/* Для больших сегментов - название и очки рядом */}
+                                  {segmentHeight > 15 && (
+                                    <div className="text-white font-bold text-xs opacity-90 text-center bg-black/20 rounded px-2 py-1 flex items-center gap-1">
+                                      <span className="truncate max-w-[80px]">{gameSegment.name}</span>
+                                      <span className="font-black">({gameSegment.points})</span>
+                                    </div>
+                                  )}
+
+                                  {/* Для средних сегментов - только очки */}
+                                  {segmentHeight <= 15 && segmentHeight > 8 && (
+                                    <div className="text-white font-black text-sm opacity-95 bg-black/30 rounded px-2 py-1">
                                       {gameSegment.points}
-                                    </span>
-                                  </div>
-                                )}
+                                    </div>
+                                  )}
+
+                                  {/* Для маленьких сегментов - только очки без фона */}
+                                  {segmentHeight <= 8 && segmentHeight > 4 && (
+                                    <div className="text-white font-bold text-xs opacity-90">
+                                      {gameSegment.points}
+                                    </div>
+                                  )}
+                                </div>
                               </div>
                             );
                           })}
@@ -562,7 +579,7 @@ export default function ChartPage() {
                         <div className={`w-full h-full rounded-t-3xl bg-gradient-to-t ${team.color} relative`}>
                           <div className="absolute inset-0 bg-white/30 animate-shimmer"></div>
                           <div className="absolute -bottom-4 -left-4 -right-4 h-8 bg-white/40 rounded-full blur-2xl animate-pulse"></div>
-                          
+
                           {height > 0 && (
                             <>
                               <div className="absolute top-0 left-0 right-0 h-full bg-gradient-to-b from-white/20 to-transparent"></div>
@@ -574,7 +591,7 @@ export default function ChartPage() {
                           )}
                         </div>
                       )}
-                      
+
                       <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center rounded-[8px]">
                         <span className="text-white font-bold text-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                           Տեսնել մանրամասն
@@ -582,7 +599,7 @@ export default function ChartPage() {
                       </div>
                     </div>
                   </div>
-                  
+
                   {/* Team Info */}
                   <div className="mt-6 flex flex-col items-center text-center">
                     <div className="text-sky-600 mb-2">{teamIcons[team.id]}</div>
@@ -649,21 +666,20 @@ export default function ChartPage() {
                 </span>
               </button>
             </div>
-            
+
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
               {games.map(game => {
                 const result = gameResults[game.id];
                 const isGameCompleted = result && result.first && result.second && result.third;
                 const hasPartialResults = result && (result.first || result.second || result.third);
-                
+
                 return (
-                  <div 
-                    key={game.id} 
-                    className={`text-center rounded-xl p-4 transition-all duration-300 cursor-pointer hover:scale-105 relative border-2 ${
-                      isGameCompleted ? `glass border-emerald-400/50 ${game.bgColor}` : 
-                      hasPartialResults ? `glass border-amber-400/50 ${game.bgColor}` :
-                      'glass-dark opacity-50'
-                    }`}
+                  <div
+                    key={game.id}
+                    className={`text-center rounded-xl p-4 transition-all duration-300 cursor-pointer hover:scale-105 relative border-2 ${isGameCompleted ? `glass border-emerald-400/50 ${game.bgColor}` :
+                        hasPartialResults ? `glass border-amber-400/50 ${game.bgColor}` :
+                          'glass-dark opacity-50'
+                      }`}
                     onClick={() => {
                       if (isGameCompleted) {
                         toast.success(`${game.name} - Ավարտված`, {
@@ -692,14 +708,14 @@ export default function ChartPage() {
                         </div>
                       )}
                     </div>
-                    
+
                     {/* Game color indicator */}
                     <div className={`w-full h-2 rounded-full bg-gradient-to-r ${game.color} mb-2 opacity-80`}></div>
-                    
+
                     <div className="text-sky-900 text-sm mb-2 font-bold">
                       {game.name}
                     </div>
-                    
+
                     <div className="flex gap-2 justify-center flex-wrap mb-2">
                       {result?.first && (
                         <div className="flex items-center gap-1">
@@ -726,7 +742,7 @@ export default function ChartPage() {
                         </div>
                       )}
                     </div>
-                    
+
                     <div className="text-xs text-sky-600">
                       <div className="flex items-center justify-center gap-1">
                         <Trophy className="w-3 h-3" />
@@ -741,27 +757,27 @@ export default function ChartPage() {
                 );
               })}
             </div>
-            
+
             {/* Detailed Statistics */}
             {showDetailedStats && (
               <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
                 {teams.map(team => {
                   const history = getTeamHistory(team.id);
-                  const avgPlace = history.length > 0 
-                    ? history.reduce((sum, h) => sum + h.place, 0) / history.length 
+                  const avgPlace = history.length > 0
+                    ? history.reduce((sum, h) => sum + h.place, 0) / history.length
                     : 0;
                   const totalPoints = totalScores[team.id] || 0;
                   const efficiency = history.length > 0
                     ? Math.round((totalPoints / (history.length * 40)) * 100)
                     : 0;
-                  
+
                   return (
                     <div key={team.id} className="glass rounded-xl p-4">
                       <div className="flex items-center gap-2 mb-3">
                         <span className="text-2xl">{team.icon}</span>
                         <h4 className="font-bold text-sky-900">{team.name}</h4>
                       </div>
-                      
+
                       <div className="space-y-2 text-sm">
                         <div className="flex justify-between">
                           <span className="text-sky-600">Միջին տեղ:</span>
@@ -788,7 +804,7 @@ export default function ChartPage() {
                           {games.map(game => {
                             const gameScore = animatedDetailedScores[team.id]?.[game.id] || 0;
                             if (gameScore === 0) return null;
-                            
+
                             return (
                               <div key={game.id} className="flex items-center justify-between text-xs mb-1">
                                 <div className="flex items-center gap-2">
@@ -825,7 +841,7 @@ export default function ChartPage() {
                   ✕
                 </button>
               </div>
-              
+
               <div className="space-y-3">
                 {getTeamHistory(selectedTeamHistory).length === 0 ? (
                   <div className="text-center text-sky-600 py-8">
@@ -858,7 +874,7 @@ export default function ChartPage() {
                   ))
                 )}
               </div>
-              
+
               <div className="mt-6 p-4 bg-gradient-to-r from-cyan-50 to-blue-50 rounded-xl">
                 <div className="text-center">
                   <div className="text-3xl font-black text-sky-900">
@@ -868,7 +884,7 @@ export default function ChartPage() {
                   {getTeamHistory(selectedTeamHistory).length > 0 && (
                     <div className="mt-2 text-sm text-sky-700">
                       Արդյունավետություն: {
-                        Math.round((animatedScores[selectedTeamHistory] || 0) / 
+                        Math.round((animatedScores[selectedTeamHistory] || 0) /
                           (getTeamHistory(selectedTeamHistory).length * 40) * 100)
                       }%
                     </div>
@@ -888,7 +904,7 @@ export default function ChartPage() {
             <ArrowLeft className="w-6 h-6 group-hover:-translate-x-1 transition-transform" />
             Վերադառնալ աղյուսակին
           </Link>
-          
+
           <Link
             href="/"
             className="inline-flex text-center bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold py-5 px-10 rounded-full text-xl shadow-2xl hover:shadow-emerald-500/50 transform hover:scale-105 transition-all duration-300 items-center gap-3"
@@ -901,17 +917,17 @@ export default function ChartPage() {
               onClick={() => setShowCelebration(true)}
               className="inline-flex bg-gradient-to-r from-yellow-400 to-orange-500 text-white font-bold py-5 px-10 rounded-full text-xl shadow-2xl hover:shadow-yellow-500/50 transform hover:scale-105 transition-all duration-300 items-center gap-3 animate-pulse"
             >
-              🎉 Ցույց տալ հաղթանակը
+              🎉 Հաղթող թիմ
             </button>
           )}
         </div>
       </div>
 
       {showCelebration && winner && (
-        <Celebration 
-          winner={winner} 
-          isVisible={showCelebration} 
-          onClose={handleCloseCelebration} 
+        <Celebration
+          winner={winner}
+          isVisible={showCelebration}
+          onClose={handleCloseCelebration}
         />
       )}
 
