@@ -4,12 +4,12 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 
 const openSans = Open_Sans({
-  variable: "--font-geist-sans",
+  variable: "--font-open-sans",
   subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-  title: "Մեծ Խաղ - Սևան",
+  title: "MoF - ADB Joint Environmental Reatreat",
   description: "Էպիկական մրցակցություն Սևանի ափին",
 };
 

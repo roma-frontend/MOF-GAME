@@ -1,6 +1,5 @@
 'use client';
 
-import { Bird, Fish, Trees } from 'lucide-react';
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 // Типы данных

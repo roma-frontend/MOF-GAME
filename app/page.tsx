@@ -8,7 +8,7 @@ import { toast } from 'sonner';
 export default function HomePage() {
   const [isVisible, setIsVisible] = useState(false);
   const [currentTeam, setCurrentTeam] = useState(0);
-  const [particles, setParticles] = useState<Array<{id: number, x: number, y: number}>>([]);
+  const [particles, setParticles] = useState<Array<{ id: number, x: number, y: number }>>([]);
   const [hoveredTeam, setHoveredTeam] = useState<number | null>(null);
 
   useEffect(() => {
@@ -17,7 +17,7 @@ export default function HomePage() {
       description: 'Պատրա՞ստ եք էպիկական արկածախնդրության',
       duration: 2000,
     });
-    
+
     const teamInterval = setInterval(() => {
       setCurrentTeam(prev => (prev + 1) % 3);
     }, 3000);
@@ -38,68 +38,74 @@ export default function HomePage() {
   }, []);
 
   const teams = [
-    { 
-      name: 'Ջրում', 
-      icon: <FishSymbol className="w-16 h-16" />, 
+    {
+      name: 'Ջրում',
+      icon: <FishSymbol className="w-16 h-16" />,
       color: 'from-cyan-400 to-blue-500',
       bgColor: 'from-cyan-50 via-blue-50 to-sky-100',
     },
-    { 
-      name: 'Ցամաքում', 
-      icon: <Trees className="w-16 h-16 text-green-700" />, 
+    {
+      name: 'Ցամաքում',
+      icon: <Trees className="w-16 h-16 text-green-700" />,
       color: 'from-teal-700 to-green-500',
       bgColor: 'from-blue-50 via-indigo-50 to-purple-100',
     },
-    { 
-      name: 'Օդում', 
-      icon: <Bird className="w-16 h-16 text-orange-600" />, 
+    {
+      name: 'Օդում',
+      icon: <Bird className="w-16 h-16 text-orange-600" />,
       color: 'from-orange-400 to-red-600',
       bgColor: 'from-emerald-50 via-teal-50 to-green-100',
     }
   ];
 
   const games = [
-    { 
-      name: 'Ճանաչիր Սևանը', 
-      icon: '🏞️', 
-      points: '20/15/10', 
-      difficulty: 'Միջին', 
-      color: 'from-cyan-400 to-blue-500',
-      bgColor: 'bg-gradient-to-br from-cyan-50 to-blue-100',
+    {
+      name: 'Ճանաչիր Սևանը',
+      icon: '🏞️',
+      points: '20/15/10',
+      difficulty: 'Միջին',
+      // Мягкий бирюзово-голубой градиент (ассоциируется с водой и природой)
+      color: 'from-sky-400 via-cyan-400 to-blue-500',
+      bgColor: 'bg-gradient-to-br from-sky-50 via-cyan-25 to-blue-50',
     },
-    { 
-      name: 'Քարհավաք', 
-      icon: '💎', 
-      points: '40/25/15', 
-      difficulty: 'Բարձր', 
-      color: 'from-purple-400 to-pink-500',
-      bgColor: 'bg-gradient-to-br from-purple-50 to-pink-100',
+    {
+      name: 'Քարհավաք',
+      icon: '💎',
+      points: '40/25/15',
+      difficulty: 'Բարձր',
+      // Элегантный фиолетово-розовый градиент (драгоценные камни)
+      color: 'from-violet-400 via-purple-500 to-fuchsia-500',
+      bgColor: 'bg-gradient-to-br from-violet-50 via-purple-25 to-fuchsia-50',
     },
-    { 
-      name: 'Ճանաչիր ՖՆ', 
-      icon: '🏛️', 
-      points: '15/10/5', 
-      difficulty: 'Հեշտ', 
-      color: 'from-blue-500 to-indigo-600',
-      bgColor: 'bg-gradient-to-br from-blue-50 to-indigo-100',
+    {
+      name: 'Ճանաչիր ՖՆ',
+      icon: '🏛️',
+      points: '15/10/5',
+      difficulty: 'Հեշտ',
+      // Глубокий индиго-синий градиент (классика и надежность)
+      color: 'from-blue-500 via-indigo-500 to-blue-600',
+      bgColor: 'bg-gradient-to-br from-blue-50 via-indigo-25 to-blue-75',
     },
-    { 
-      name: 'Ճանաչիր ԱԶԲ', 
-      icon: '🏦', 
-      points: '15/10/5', 
-      difficulty: 'Հեշտ', 
-      color: 'from-emerald-400 to-teal-600',
-      bgColor: 'bg-gradient-to-br from-emerald-50 to-teal-100',
+    {
+      name: 'Ճանաչիր ԱԶԲ',
+      icon: '🏦',
+      points: '15/10/5',
+      difficulty: 'Հեշտ',
+      // Свежий зелено-изумрудный градиент (природа и рост)
+      color: 'from-emerald-400 via-green-500 to-teal-500',
+      bgColor: 'bg-gradient-to-br from-emerald-50 via-green-25 to-teal-50',
     },
-    { 
-      name: 'Թիմային խաղ', 
-      icon: '🤝', 
-      points: '35/20/10', 
-      difficulty: 'Բարձր', 
-      color: 'from-orange-400 to-red-500',
-      bgColor: 'bg-gradient-to-br from-orange-50 to-red-100',
+    {
+      name: 'Թիմային խաղ',
+      icon: '🤝',
+      points: '35/20/10',
+      difficulty: 'Բարձր',
+      // Теплый оранжево-янтарный градиент (энергия и командный дух)
+      color: 'from-amber-400 via-orange-500 to-red-400',
+      bgColor: 'bg-gradient-to-br from-amber-50 via-orange-25 to-red-50',
     }
   ];
+
 
   return (
     <div className={`min-h-[100lvh] bg-gradient-to-br ${teams[currentTeam].bgColor} transition-all duration-1000 overflow-hidden relative`}>
@@ -111,7 +117,7 @@ export default function HomePage() {
             <path fill="#0891b2" fillOpacity="0.3" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,138.7C960,139,1056,117,1152,101.3C1248,85,1344,75,1392,69.3L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
           </svg>
         </div>
-        
+
         {/* Floating Particles */}
         {particles.map(particle => (
           <div
@@ -141,7 +147,7 @@ export default function HomePage() {
             <Sparkles className="absolute -top-4 -right-4 w-12 h-12 text-yellow-400 animate-spin" />
             <Star className="absolute -top-2 -left-4 w-8 h-8 text-yellow-400 animate-pulse" />
           </div>
-          
+
           <h1 className="text-4xl font-black mb-12 relative">
             <span className="absolute inset-0 bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-600 blur-lg">
               MoF - ADB Joint Environmental Reatreat  <br /><span className="text-3xl">26 July 2025</span>
@@ -158,17 +164,16 @@ export default function HomePage() {
             <UsersRound className="w-14 h-14 text-blue-400" />
             Մրցակից թիմեր
           </h2>
-          
+
           {/* Active Team Display */}
           <div className="relative h-64 mb-8">
             {teams.map((team, index) => (
               <div
                 key={team.name}
-                className={`absolute inset-0 flex items-center justify-center transition-all duration-1000 ${
-                  index === currentTeam ? 'opacity-100 scale-100' : 'opacity-0 scale-90'
-                }`}
+                className={`absolute inset-0 flex items-center justify-center transition-all duration-1000 ${index === currentTeam ? 'opacity-100 scale-100' : 'opacity-0 scale-90'
+                  }`}
               >
-                <div 
+                <div
                   className="flex flex-col items-center text-center glass rounded-3xl p-8 shadow-2xl transform hover:scale-105 transition-transform cursor-pointer"
                   onMouseLeave={() => setHoveredTeam(null)}
                 >
@@ -190,40 +195,39 @@ export default function HomePage() {
             <Flag className="w-10 h-10 text-emerald-500 animate-bounce" style={{ animationDuration: '3s' }} />
             Մարտահրավերներ
           </h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
             {games.map((game, index) => (
-              <div 
+              <div
                 key={game.name}
                 className={`group relative overflow-hidden glass rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-500 hover:scale-105 hover:-translate-y-2 cursor-pointer ${game.bgColor}`}
                 style={{ animationDelay: `${index * 100}ms` }}
-                onClick={() => toast(`${game.name}`, { 
+                onClick={() => toast(`${game.name}`, {
                   description: ` | Դժվարություն: ${game.difficulty} | Միավորներ: ${game.points}`,
-                  icon: game.icon 
+                  icon: game.icon
                 })}
               >
                 {/* Game color accent */}
                 <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${game.color} rounded-t-2xl`} />
-                
+
                 <div className={`absolute inset-0 bg-gradient-to-br ${game.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`} />
-                
+
                 <div className="relative z-10">
                   <div className="text-5xl mb-3 transform group-hover:rotate-12 group-hover:scale-110 transition-all duration-300">{game.icon}</div>
                   <h3 className="text-lg font-bold text-sky-900 mb-2">{game.name}</h3>
-                  
+
                   {/* Game color stripe */}
                   <div className={`w-full h-1 rounded-full bg-gradient-to-r ${game.color} mb-3 opacity-60 group-hover:opacity-100 transition-opacity duration-300`}></div>
-                  
+
                   <div className="space-y-1 text-sm">
                     <div className="flex items-center gap-2 text-amber-600 font-semibold">
                       <Trophy className="w-4 h-4" />
                       <span>{game.points}</span>
                     </div>
-                    <div className={`text-xs font-bold flex items-center gap-1 ${
-                      game.difficulty === 'Բարձր' ? 'text-red-500' : 
-                      game.difficulty === 'Միջին' ? 'text-amber-500' : 
-                      'text-emerald-500'
-                    }`}>
+                    <div className={`text-xs font-bold flex items-center gap-1 ${game.difficulty === 'Բարձր' ? 'text-red-500' :
+                        game.difficulty === 'Միջին' ? 'text-amber-500' :
+                          'text-emerald-500'
+                      }`}>
                       {game.difficulty === 'Բարձր' && <Flame className="w-3 h-3" />}
                       {game.difficulty === 'Միջին' && <Zap className="w-3 h-3" />}
                       {game.difficulty === 'Հեշտ' && <Star className="w-3 h-3" />}
@@ -260,7 +264,7 @@ export default function HomePage() {
           >
             <div className="absolute inset-0 bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             <div className="absolute inset-0 animate-shimmer" />
-            
+
             <Play className="relative z-10 w-8 h-8 group-hover:animate-pulse" />
             <span className="relative z-10">ՍԿՍԵԼ ԽԱՂԸ</span>
             <ArrowRight className="relative z-10 w-6 h-6 group-hover:translate-x-2 transition-transform duration-300" />
@@ -285,13 +289,13 @@ export default function HomePage() {
             <div key={index} className="text-center glass rounded-2xl p-6 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 relative overflow-hidden">
               {/* Subtle gradient background */}
               <div className={`absolute inset-0 bg-gradient-to-br ${stat.color} opacity-5`}></div>
-              
+
               <div className="relative z-10">
                 <div className="flex justify-center mb-2">{stat.icon}</div>
                 <div className="text-4xl font-black text-sky-900 mb-2">{stat.value}</div>
                 <div className="text-sky-700 font-semibold">{stat.label}</div>
               </div>
-              
+
               {/* Color accent */}
               <div className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r ${stat.color} opacity-50`}></div>
             </div>

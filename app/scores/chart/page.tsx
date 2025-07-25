@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState, useEffect, JSX } from 'react';
-import { Trophy, Medal, Fish, ArrowLeft, TrendingUp, Clock, Target, Star, AlertTriangle, ChevronUp, ChevronDown, Timer, GamepadIcon, BarChart3, FishSymbol, Trees, Bird } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Trophy, Medal, Fish, ArrowLeft, TrendingUp, Clock, Target, Star, AlertTriangle, ChevronUp, ChevronDown, Timer, GamepadIcon, BarChart3 } from 'lucide-react';
 import Link from 'next/link';
 import { toast } from 'sonner';
 import { useGame } from '../game-context';
@@ -837,7 +837,7 @@ export default function ChartPage() {
                   return (
                     <div key={team.id} className="glass rounded-xl p-4">
                       <div className="flex items-center gap-2 mb-3">
-                        <div className={`w-10 h-10 animate-float bg-gradient-to-r ${team?.color} rounded-full flex items-center justify-center shadow-2xl`}>
+                        <div className={`w-10 h-10 animate-float bg-gradient-to-r rounded-full flex items-center justify-center shadow-2xl`}>
                           <img
                             src={iconMap[team.icon as keyof typeof iconMap]}
                             alt={team.name}
