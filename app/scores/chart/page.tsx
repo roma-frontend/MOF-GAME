@@ -542,9 +542,9 @@ export default function ChartPage() {
                     <div
                       className="w-full rounded-[1.5rem] shadow-2xl transition-all duration-700 ease-out relative overflow-hidden cursor-pointer hover:scale-105 group"
                       style={{
-                        height: `${Math.max(height * 5, score > 0 ? 120 : 60)}px`,
-                        minHeight: '300px',
-                        maxHeight: '700px',
+                        height: `${Math.max(height * 5, score > 0 ? 100 : 50)}px`,
+                        minHeight: '120px', // Минимальная высота
+                        maxHeight: '500px', // Максимальная высота
                         transform: score > 0 ? 'scale(1)' : 'scale(0.8)',
                       }}
                     >
