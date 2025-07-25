@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, JSX } from 'react';
-import { Trophy, Medal, ArrowLeft, Waves, Building2, Landmark, TrendingUp, Clock, Target, Star, Award, Crown, Zap, AlertTriangle, Users, ChevronUp, ChevronDown, Timer, GamepadIcon, BarChart3, FishSymbol, Trees, Bird } from 'lucide-react';
+import { Trophy, Medal, Fish, ArrowLeft, Waves, Building2, Landmark, TrendingUp, Clock, Target, Star, Award, Crown, Zap, AlertTriangle, Users, ChevronUp, ChevronDown, Timer, GamepadIcon, BarChart3, FishSymbol, Trees, Bird } from 'lucide-react';
 import Link from 'next/link';
 import { toast } from 'sonner';
 import { useGame } from '../game-context';
@@ -18,6 +18,14 @@ export default function ChartPage() {
     });
     return initial;
   });
+
+  const iconMap = {
+    FishSymbol: FishSymbol,
+    Trees: Trees,
+    Bird: Bird
+  };
+
+  const IconComponent = iconMap[winner?.icon as keyof typeof iconMap];
 
   // Анимированные детальные очки по играм
   const [animatedDetailedScores, setAnimatedDetailedScores] = useState<{ [teamId: number]: { [gameId: number]: number } }>(() => {
@@ -294,7 +302,7 @@ export default function ChartPage() {
   };
 
   const teamIcons: { [key: number]: JSX.Element } = {
-    1: <FishSymbol className="w-12 h-12" />,
+    1: <Fish className="w-12 h-12" />,
     2: <Trees className="w-12 h-12" />,
     3: <Bird className="w-12 h-12" />
   };
@@ -383,7 +391,6 @@ export default function ChartPage() {
           {isAllGamesCompleted && winners.length > 0 && animationComplete && (
             <div className="mb-6 p-6 glass rounded-3xl shadow-2xl border-2 border-yellow-400/30">
               <div className="text-3xl text-amber-600 font-bold mb-10 flex items-center justify-center gap-2">
-
                 🎉 Բոլոր խաղերը ավարտված են 🎉
               </div>
               {winners.length === 1 ? (
@@ -551,7 +558,7 @@ export default function ChartPage() {
                                   {/* Для больших сегментов - название и очки рядом */}
                                   {segmentHeight > 15 && (
                                     <div className="text-white font-bold text-xs opacity-90 text-center bg-black/20 rounded px-2 py-1 flex items-center gap-1">
-                                      <span className="truncate max-w-[80px]">{gameSegment.name}</span>
+                                      <span className="truncate max-w-[100%]">{gameSegment.name}</span>
                                       <span className="font-black">({gameSegment.points})</span>
                                     </div>
                                   )}
@@ -677,8 +684,8 @@ export default function ChartPage() {
                   <div
                     key={game.id}
                     className={`text-center rounded-xl p-4 transition-all duration-300 cursor-pointer hover:scale-105 relative border-2 ${isGameCompleted ? `glass border-emerald-400/50 ${game.bgColor}` :
-                        hasPartialResults ? `glass border-amber-400/50 ${game.bgColor}` :
-                          'glass-dark opacity-50'
+                      hasPartialResults ? `glass border-amber-400/50 ${game.bgColor}` :
+                        'glass-dark opacity-50'
                       }`}
                     onClick={() => {
                       if (isGameCompleted) {
@@ -721,7 +728,9 @@ export default function ChartPage() {
                         <div className="flex items-center gap-1">
                           <Trophy className="w-4 h-4 text-yellow-500" />
                           <span className="text-sky-900 text-lg">
-                            {teams.find(t => t.id === result.first)?.icon}
+                            {teams.find(t => t.id === result.first)?.icon === "Fish" && <Fish className="w-6 h-6" />}
+                            {teams.find(t => t.id === result.first)?.icon === "Trees" && <Trees className="w-6 h-6" />}
+                            {teams.find(t => t.id === result.first)?.icon === "Bird" && <Bird className="w-6 h-6" />}
                           </span>
                         </div>
                       )}
@@ -729,15 +738,20 @@ export default function ChartPage() {
                         <div className="flex items-center gap-1">
                           <Medal className="w-4 h-4 text-gray-400" />
                           <span className="text-sky-900 text-lg">
-                            {teams.find(t => t.id === result.second)?.icon}
+                            {teams.find(t => t.id === result.second)?.icon === "Fish" && <Fish className="w-6 h-6" />}
+                            {teams.find(t => t.id === result.second)?.icon === "Trees" && <Trees className="w-6 h-6" />}
+                            {teams.find(t => t.id === result.second)?.icon === "Bird" && <Bird className="w-6 h-6" />}
                           </span>
                         </div>
                       )}
+
                       {result?.third && (
                         <div className="flex items-center gap-1">
                           <Medal className="w-4 h-4 text-orange-500" />
                           <span className="text-sky-900 text-lg">
-                            {teams.find(t => t.id === result.third)?.icon}
+                            {teams.find(t => t.id === result.third)?.icon === "Fish" && <Fish className="w-6 h-6" />}
+                            {teams.find(t => t.id === result.third)?.icon === "Trees" && <Trees className="w-6 h-6" />}
+                            {teams.find(t => t.id === result.third)?.icon === "Bird" && <Bird className="w-6 h-6" />}
                           </span>
                         </div>
                       )}
@@ -774,7 +788,13 @@ export default function ChartPage() {
                   return (
                     <div key={team.id} className="glass rounded-xl p-4">
                       <div className="flex items-center gap-2 mb-3">
-                        <span className="text-2xl">{team.icon}</span>
+                        {IconComponent && (
+                          <div
+                            className={`w-10 h-10 animate-float bg-gradient-to-r ${team?.color} rounded-full flex items-center justify-center shadow-2xl`}
+                          >
+                            <IconComponent className="w-6 h-6 text-white" />
+                          </div>
+                        )}
                         <h4 className="font-bold text-sky-900">{team.name}</h4>
                       </div>
 
@@ -926,6 +946,7 @@ export default function ChartPage() {
       {showCelebration && winner && (
         <Celebration
           winner={winner}
+          team={winner}
           isVisible={showCelebration}
           onClose={handleCloseCelebration}
         />

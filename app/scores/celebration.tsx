@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Trophy, Star, Crown, Sparkles, X, Fish, Trees, Bird } from 'lucide-react';
 import { toast } from 'sonner';
-import { useGame } from './game-context';
+import { Team, useGame } from './game-context';
 
 interface CelebrationProps {
   winner: {
@@ -12,6 +12,7 @@ interface CelebrationProps {
   };
   isVisible: boolean;
   onClose: () => void;
+  team: Team
 }
 
 interface Confetti {
@@ -149,17 +150,17 @@ export default function Celebration({ winner, isVisible, onClose }: CelebrationP
         </div>
 
         {/* Congratulations Text */}
-        <div className="mb-8 text-center">
-          <h1 className="text-9xl font-black text-white mb-6 animate-pulse">
-            Թիմ՝ {winner.name}
+        <div className="mb-12 text-center">
+          <h1 className="text-7xl font-black text-white mb-6 animate-pulse">
+            Թիմ՝ <br /><span className='text-9xl'>{winner.name}</span>
           </h1>
           <h2 className="text-3xl md:text-5xl font-bold mb-6">
           </h2>
         </div>
 
         {/* Winner Icon */}
-        <div className="mb-8">
-          <div className="mb-6 filter drop-shadow-2xl">
+        <div className="mb-12">
+          <div className="mb-10 filter drop-shadow-2xl">
             {IconComponent && (
               <div 
                 className={`w-40 h-40 mx-auto animate-float bg-gradient-to-r ${winner.color} rounded-full flex items-center justify-center shadow-2xl`}
