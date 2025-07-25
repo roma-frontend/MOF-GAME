@@ -107,7 +107,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
     });
     return initial;
   });
-  
+
+
   const [detailedScores, setDetailedScores] = useState<DetailedScores>(() => {
     const initial: DetailedScores = {};
     TEAMS.forEach(team => {
@@ -160,12 +161,13 @@ export function GameProvider({ children }: { children: ReactNode }) {
     }
   }, [gameResults]);
 
+
   // Вычисление общих очков и детальных очков
   useEffect(() => {
     const calculateScores = () => {
       const newTotalScores: { [teamId: number]: number } = {};
       const newDetailedScores: DetailedScores = {};
-      
+
       // Инициализируем все команды нулями
       TEAMS.forEach(team => {
         newTotalScores[team.id] = 0;
@@ -178,10 +180,10 @@ export function GameProvider({ children }: { children: ReactNode }) {
       // Подсчитываем очки
       Object.entries(gameResults).forEach(([gameId, result]) => {
         if (!result || typeof result !== 'object') return;
-        
+
         const game = GAMES.find(g => g.id === parseInt(gameId));
         if (!game) return;
-        
+
         if (result.first && typeof result.first === 'number' && newTotalScores.hasOwnProperty(result.first)) {
           const points = game.points.first;
           newTotalScores[result.first] = (newTotalScores[result.first] || 0) + points;
@@ -205,7 +207,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     const { newTotalScores, newDetailedScores } = calculateScores();
     setTotalScores(newTotalScores);
     setDetailedScores(newDetailedScores);
-    
+
     try {
       localStorage.setItem('totalScores', JSON.stringify(newTotalScores));
       localStorage.setItem('detailedScores', JSON.stringify(newDetailedScores));
@@ -237,41 +239,32 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const setTeamPlace = (gameId: number, teamId: number, place: 'first' | 'second' | 'third') => {
     setGameResults(prev => {
       const newResults = { ...prev };
-      
+
       if (!newResults[gameId]) {
         newResults[gameId] = {};
       }
-      
-      const places: Array<'first' | 'second' | 'third'> = ['first', 'second', 'third'];
-      places.forEach(p => {
-        if (newResults[gameId][p] === teamId) {
-          delete newResults[gameId][p];
-        }
-      });
-      
-      if (newResults[gameId][place] === teamId) {
-        delete newResults[gameId][place];
-      } else {
-        const currentTeam = newResults[gameId][place];
-        if (!currentTeam) {
-          newResults[gameId][place] = teamId;
+
+      // Удаляем команду из других мест в этой игре
+      for (const key in newResults[gameId]) {
+        if (newResults[gameId][key as keyof typeof newResults[number]] === teamId) {
+          delete newResults[gameId][key as keyof typeof newResults[number]];
         }
       }
-      
-      if (Object.keys(newResults[gameId]).length === 0) {
-        delete newResults[gameId];
-      }
-      
+
+      // Устанавливаем новое место
+      newResults[gameId][place] = teamId;
+
       return newResults;
     });
   };
+
 
   // Функция для сброса всех очков
   const resetScores = () => {
     setGameResults({});
     const emptyScores: { [teamId: number]: number } = {};
     const emptyDetailedScores: DetailedScores = {};
-    
+
     TEAMS.forEach(team => {
       emptyScores[team.id] = 0;
       emptyDetailedScores[team.id] = {};
@@ -279,10 +272,10 @@ export function GameProvider({ children }: { children: ReactNode }) {
         emptyDetailedScores[team.id][game.id] = 0;
       });
     });
-    
+
     setTotalScores(emptyScores);
     setDetailedScores(emptyDetailedScores);
-    
+
     try {
       localStorage.removeItem('gameResults');
       localStorage.removeItem('totalScores');
@@ -292,17 +285,18 @@ export function GameProvider({ children }: { children: ReactNode }) {
     }
   };
 
+
   return (
-    <GameContext.Provider value={{ 
-      games: GAMES, 
-      teams: TEAMS, 
-      gameResults, 
+    <GameContext.Provider value={{
+      games: GAMES,
+      teams: TEAMS,
+      gameResults,
       totalScores,
       detailedScores,
       isAllGamesCompleted,
       winner,
-      setTeamPlace, 
-      resetScores 
+      setTeamPlace,
+      resetScores
     }}>
       {children}
     </GameContext.Provider>

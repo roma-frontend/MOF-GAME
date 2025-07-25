@@ -35,14 +35,15 @@ export default function ScoresPage() {
   }
 
   const handlePlaceClick = (gameId: number, teamId: number, place: 'first' | 'second' | 'third') => {
+    console.log('Attempting to select:', { gameId, teamId, place });
     setTeamPlace(gameId, teamId, place);
-    
+
     const placeName = place === 'first' ? '1-ին' : place === 'second' ? '2-րդ' : '3-րդ';
     const team = teams.find(t => t.id === teamId);
     const game = games.find(g => g.id === gameId);
-    
+
     const TeamIcon = iconMap[team?.icon as keyof typeof iconMap];
-    
+
     toast.success(`${team?.name} թիմը զբաղեցրեց ${placeName} տեղը`, {
       description: `${game?.name} խաղում`,
       icon: TeamIcon ? <TeamIcon className="w-4 h-4" /> : '🏆',
@@ -58,18 +59,18 @@ export default function ScoresPage() {
           <div className="w-16 h-16 bg-gradient-to-br from-red-400 to-red-600 rounded-full flex items-center justify-center shadow-lg">
             <RotateCcw className="w-8 h-8 text-white animate-pulse" />
           </div>
-          
+
           {/* Title */}
           <h3 className="text-xl font-bold text-red-800">
             Զրոյացնել արդյունքները
           </h3>
-          
+
           {/* Description */}
           <div className="text-red-700 space-y-2">
             <p className="font-medium">Վստա՞հ եք, որ ցանկանում եք զրոյացնել բոլոր արդյունքները:</p>
             <p className="text-sm text-red-600">⚠️ Այս գործողությունը չի կարող հետ շրջվել</p>
           </div>
-          
+
           {/* Action Buttons */}
           <div className="flex gap-3 w-full pt-2">
             <button
@@ -90,7 +91,7 @@ export default function ScoresPage() {
               <X className="w-4 h-4" />
               Չեղարկել
             </button>
-            
+
             <button
               onClick={() => {
                 toast.dismiss(t);
@@ -142,16 +143,27 @@ export default function ScoresPage() {
     const result = gameResults[gameId];
     return result && result[place];
   };
-
   const getCompletedGamesCount = () => {
-    return Object.entries(gameResults).filter(([_, result]) => 
-      result && result.first && result.second && result.third
-    ).length;
+    return games.filter(game => {
+      const result = gameResults[game.id];
+      // Игра считается завершенной только если все три места заполнены
+      return result &&
+        result.first !== undefined &&
+        result.second !== undefined &&
+        result.third !== undefined;
+    }).length;
   };
 
+  useEffect(() => {
+    console.log('Game results:', gameResults);
+    console.log('Completed games:', completedGames);
+    console.log('Progress:', progress);
+  }, [gameResults]);
+
+  // Используйте одну из этих функций в зависимости от требований
   const completedGames = getCompletedGamesCount();
   const totalGames = games.length;
-  const progress = (completedGames / totalGames) * 100;
+  const progress = totalGames > 0 ? Math.min((completedGames / totalGames) * 100, 100) : 0;
 
   return (
     <div className="min-h-[100lvh] bg-gradient-to-br from-sky-50 via-cyan-50 to-blue-100 px-6 py-12">
@@ -171,7 +183,7 @@ export default function ScoresPage() {
             </h1>
             <Trophy className="w-16 h-16 text-yellow-500 animate-bounce" style={{ animationDelay: '0.5s' }} />
           </div>
-          
+
           {/* Progress bar */}
           <div className="max-w-2xl mx-auto mb-6">
             <div className="glass rounded-2xl p-4 shadow-lg">
@@ -182,11 +194,11 @@ export default function ScoresPage() {
                 </span>
               </div>
               <div className="w-full bg-sky-200 rounded-full h-3 overflow-hidden">
-                <div 
+                <div
                   className="h-full bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full transition-all duration-1000 ease-out relative"
-                  style={{ width: `${progress}%` }}
+                  style={{ width: '100%' }} // Тест с полным заполнением
                 >
-                  <div className="absolute inset-0 bg-white/30 animate-shimmer"></div>
+                  <div className="absolute inset-0 bg-white/30 animate-pulse"></div>
                 </div>
               </div>
             </div>
@@ -252,13 +264,12 @@ export default function ScoresPage() {
                 {games.map((game, gameIndex) => {
                   const result = gameResults[game.id] || {};
                   const isGameComplete = result.first && result.second && result.third;
-                  
+
                   return (
-                    <tr 
-                      key={game.id} 
-                      className={`border-b border-sky-100 transition-all duration-500 hover:bg-sky-50/50 ${
-                        isGameComplete ? 'bg-emerald-50/30' : ''
-                      }`}
+                    <tr
+                      key={game.id}
+                      className={`border-b border-sky-100 transition-all duration-500 hover:bg-sky-50/50 ${isGameComplete ? 'bg-emerald-50/30' : ''
+                        }`}
                       style={{ animationDelay: `${gameIndex * 50}ms` }}
                     >
                       <td className="py-4 px-4">
@@ -266,7 +277,7 @@ export default function ScoresPage() {
                           <div className="relative">
                             {/* Game color indicator */}
                             <div className={`w-8 h-8 rounded-full bg-gradient-to-r ${game.color} flex items-center justify-center shadow-lg`}>
-                              <Sparkles className={`w-4 h-4 text-white ${isGameComplete ? 'animate-spin' : ''}`} 
+                              <Sparkles className={`w-4 h-4 text-white ${isGameComplete ? 'animate-spin' : ''}`}
                                 style={{ animationDuration: '3s' }} />
                             </div>
                             {isGameComplete && (
@@ -289,44 +300,32 @@ export default function ScoresPage() {
                         <td key={place} className="py-4 px-4">
                           <div className="flex justify-center gap-4">
                             {teams.map((team) => {
-                              const isSelected = result[place] === team.id;
-                              const isOtherPlace = Object.values(result).includes(team.id) && !isSelected;
+                              const isSelected = gameResults[game.id]?.[place] === team.id;
                               const TeamIcon = iconMap[team.icon as keyof typeof iconMap];
-                              
+
                               return (
                                 <button
                                   key={team.id}
-                                  onClick={() => handlePlaceClick(game.id, team.id, place)}
-                                  disabled={isOtherPlace}
+                                  onClick={() => {
+                                    console.log('Selecting:', { gameId: game.id, teamId: team.id, place });
+                                    handlePlaceClick(game.id, team.id, place);
+                                  }}
                                   className={`
-                                    relative w-24 h-14 rounded-[8px] flex items-center justify-center text-2xl
-                                    transition-all duration-300 transform hover:scale-110
-                                    ${isSelected 
-                                      ? `bg-gradient-to-br ${team.color} shadow-lg scale-110 ring-2 ring-white` 
-                                      : isOtherPlace
-                                      ? 'bg-gray-200 opacity-30 cursor-not-allowed'
-                                      : 'bg-white/70 hover:bg-white shadow-md hover:shadow-lg'
+        relative w-24 h-14 rounded-[8px] flex items-center justify-center
+        transition-all duration-200
+        ${isSelected
+                                      ? `bg-gradient-to-br ${team.color} text-white scale-105 shadow-lg`
+                                      : 'bg-white/90 hover:bg-white text-gray-800 shadow-md'
                                     }
-                                  `}
-                                  title={`${team.name}${isOtherPlace ? ' (արդեն ընտրված է)' : ''}`}
+      `}
                                 >
-                                  <span className={isSelected ? 'animate-bounce' : ''}>
-                                    {TeamIcon && (
-                                      <TeamIcon 
-                                        className={`w-8 h-8 ${isSelected ? 'text-white' : 'text-sky-700'}`} 
-                                      />
-                                    )}
-                                  </span>
+                                  {TeamIcon && <TeamIcon className="w-8 h-8" />}
                                   {isSelected && (
-                                    <div className="absolute -top-1 -right-1">
-                                      {place === 'first' && <Trophy className="w-4 h-4 text-yellow-500" />}
-                                      {place === 'second' && <Medal className="w-4 h-4 text-gray-400" />}
-                                      {place === 'third' && <Medal className="w-4 h-4 text-orange-500" />}
+                                    <div className="absolute -top-2 -right-2">
+                                      {place === 'first' && <Trophy className="w-5 h-5 text-yellow-400" />}
+                                      {place === 'second' && <Medal className="w-5 h-5 text-gray-300" />}
+                                      {place === 'third' && <Medal className="w-5 h-5 text-amber-500" />}
                                     </div>
-                                  )}
-                                  {/* Game color accent for selected */}
-                                  {isSelected && (
-                                    <div className={`absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-4 h-1 rounded-full bg-gradient-to-r ${game.color} opacity-80`}></div>
                                   )}
                                 </button>
                               );

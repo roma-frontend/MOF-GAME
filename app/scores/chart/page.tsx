@@ -131,7 +131,11 @@ export default function ChartPage() {
     return () => clearTimeout(delay);
   }, [mounted, totalScores, detailedScores, isAllGamesCompleted, winner]);
 
+  // Используем максимально возможное количество очков как базу для высоты
+  const maxPossibleScore = games.reduce((sum, game) => sum + game.points.first, 0); // 125 очков
   const maxScore = Math.max(...Object.values(animatedScores).filter(score => !isNaN(score)), 1);
+  // Используем либо текущий максимум, либо 80% от максимально возможного (для лучшей визуализации)
+  const chartMaxScore = maxPossibleScore;
 
   const getTeamPosition = (teamId: number): number => {
     const sortedTeams = Object.entries(animatedScores)
@@ -277,26 +281,32 @@ export default function ChartPage() {
     return { completedGames, totalGames, progress, totalPointsAwarded, maxPossiblePoints };
   };
 
-  // Функция для создания стека по играм
   const createGameStack = (teamId: number) => {
     const teamScores = animatedDetailedScores[teamId] || {};
     const stack: Array<{ gameId: number, points: number, percentage: number, color: string, name: string }> = [];
-    let cumulativeHeight = 0;
 
+    // Собираем все игры с очками для этой команды
     games.forEach(game => {
       const points = teamScores[game.id] || 0;
       if (points > 0) {
-        const percentage = maxScore > 0 ? (points / maxScore) * 100 : 0;
         stack.push({
           gameId: game.id,
           points,
-          percentage,
+          percentage: 0, // Временно устанавливаем 0, рассчитаем позже
           color: game.color,
           name: game.name
         });
-        cumulativeHeight += percentage;
       }
     });
+
+    // Рассчитываем процентное соотношение для каждого сегмента
+    const totalTeamScore = stack.reduce((sum, segment) => sum + segment.points, 0);
+
+    if (totalTeamScore > 0) {
+      stack.forEach(segment => {
+        segment.percentage = (segment.points / totalTeamScore) * 100;
+      });
+    }
 
     return stack;
   };
@@ -373,6 +383,9 @@ export default function ChartPage() {
               >
                 <div className="absolute inset-0 bg-white/30 animate-shimmer"></div>
               </div>
+            </div>
+            <div className="mt-2 text-center text-xs text-sky-600">
+              Մաքսիմալ հնարավոր միավորներ՝ {maxPossibleScore}
             </div>
           </div>
 
@@ -460,7 +473,7 @@ export default function ChartPage() {
           <div className="flex items-end justify-center gap-8 lg:gap-12">
             {teams.map((team, index) => {
               const score = animatedScores[team.id] || 0;
-              const height = maxScore > 0 ? (score / maxScore) * 100 : 0;
+              const height = chartMaxScore > 0 ? (score / chartMaxScore) * 100 : 0;
               const position = getTeamPosition(team.id);
               const trendInfo = getTeamTrend(team.id);
               const gameStack = createGameStack(team.id);
@@ -520,7 +533,7 @@ export default function ChartPage() {
                     <div
                       className="w-full rounded-[1.5rem] shadow-2xl transition-all duration-700 ease-out relative overflow-hidden cursor-pointer hover:scale-105 group"
                       style={{
-                        height: `${Math.max(height * 3.5, 30)}px`,
+                        height: `${Math.max(height * 4, score > 0 ? 60 : 30)}px`,
                         transform: score > 0 ? 'scale(1)' : 'scale(0.8)',
                       }}
                       onClick={() => {
@@ -533,7 +546,14 @@ export default function ChartPage() {
                         // Показываем разбивку по играм (снизу вверх)
                         <>
                           {gameStack.map((gameSegment, segmentIndex) => {
-                            const segmentHeight = (gameSegment.points / (score || 1)) * 100;
+                            // Высота сегмента относительно общей высоты столбца команды
+                            const segmentHeight = gameSegment.percentage;
+
+                            // Вычисляем положение снизу (накопительно)
+                            const bottomPosition = gameStack
+                              .slice(0, segmentIndex)
+                              .reduce((sum, seg) => sum + seg.percentage, 0);
+
                             const isFirst = segmentIndex === 0;
                             const isLast = segmentIndex === gameStack.length - 1;
 
@@ -543,7 +563,7 @@ export default function ChartPage() {
                                 className={`absolute left-0 right-0 bg-gradient-to-t ${gameSegment.color} transition-all duration-700 ease-out group-hover:brightness-110`}
                                 style={{
                                   height: `${segmentHeight}%`,
-                                  bottom: `${gameStack.slice(0, segmentIndex).reduce((sum, seg) => sum + (seg.points / (score || 1)) * 100, 0)}%`,
+                                  bottom: `${bottomPosition}%`,
                                   borderTopLeftRadius: isLast ? '1.5rem' : '0',
                                   borderTopRightRadius: isLast ? '1.5rem' : '0',
                                   borderBottomLeftRadius: isFirst ? '1.5rem' : '0',
@@ -582,7 +602,7 @@ export default function ChartPage() {
                           })}
                         </>
                       ) : (
-                        // Показываем обычный градиент команды
+                        // Обычный градиент команды без разбивки
                         <div className={`w-full h-full rounded-t-3xl bg-gradient-to-t ${team.color} relative`}>
                           <div className="absolute inset-0 bg-white/30 animate-shimmer"></div>
                           <div className="absolute -bottom-4 -left-4 -right-4 h-8 bg-white/40 rounded-full blur-2xl animate-pulse"></div>
@@ -592,7 +612,7 @@ export default function ChartPage() {
                               <div className="absolute top-0 left-0 right-0 h-full bg-gradient-to-b from-white/20 to-transparent"></div>
                               <div className="absolute bottom-0 left-0 right-0 bg-white/40 animate-ping" style={{ height: '20px' }}></div>
                               <div className="absolute bottom-2 left-2 right-2 text-white/80 text-xs font-bold text-center">
-                                {Math.round((score / 125) * 100)}%
+                                {Math.round((score / maxPossibleScore) * 100)}%
                               </div>
                             </>
                           )}
@@ -611,6 +631,21 @@ export default function ChartPage() {
                   <div className="mt-6 flex flex-col items-center text-center">
                     <div className="text-sky-600 mb-2">{teamIcons[team.id]}</div>
                     <div className="text-2xl font-bold text-sky-900">{team.name}</div>
+
+                    {/* Progress indicator */}
+                    <div className="mt-2 w-full max-w-[150px]">
+                      <div className="flex justify-between text-xs text-sky-600 mb-1">
+                        <span>Առաջընթաց</span>
+                        <span>{Math.round((score / maxPossibleScore) * 100)}%</span>
+                      </div>
+                      <div className="w-full bg-sky-200/50 rounded-full h-2 overflow-hidden">
+                        <div
+                          className={`h-full bg-gradient-to-r ${team.color} rounded-full transition-all duration-1000 ease-out`}
+                          style={{ width: `${(score / maxPossibleScore) * 100}%` }}
+                        />
+                      </div>
+                    </div>
+
                     <div className="text-sm text-sky-600 mt-1 flex items-center justify-center gap-2">
                       {trendInfo.trend === 'rising' && (
                         <>
@@ -646,7 +681,7 @@ export default function ChartPage() {
               <h4 className="text-lg font-bold text-sky-900 mb-4 text-center">Խաղերի լեգենդ</h4>
               <div className="flex flex-wrap justify-center gap-4">
                 {games.map(game => (
-                  <div key={game.id} className="flex items-center gap-2 glass rounded-lg px-3 py-2">
+                  <div key={game.id} className="flex items-center gap-2 glass rounded-lg px-3 py-2 hover:scale-105 transition-transform">
                     <div className={`w-4 h-4 rounded bg-gradient-to-r ${game.color}`}></div>
                     <span className="text-sm font-medium text-sky-900">{game.name}</span>
                     <span className="text-xs text-sky-600">({game.points.first})</span>
