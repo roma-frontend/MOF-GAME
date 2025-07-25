@@ -37,22 +37,29 @@ export default function HomePage() {
     };
   }, []);
 
+
+  const iconMap = {
+    FishSymbol: '/icons/fish.png',
+    Trees: '/icons/plant.png',
+    Bird: '/icons/bird.png'
+  };
+
   const teams = [
     {
       name: 'Ջրում',
-      icon: <FishSymbol className="w-16 h-16" />,
+      icon: <img src={iconMap.FishSymbol} alt="Fish" className="w-16 h-16" />,
       color: 'from-cyan-400 to-blue-500',
       bgColor: 'from-cyan-50 via-blue-50 to-sky-100',
     },
     {
       name: 'Ցամաքում',
-      icon: <Trees className="w-16 h-16 text-green-700" />,
+      icon: <img src={iconMap.Trees} alt="Trees" className="w-16 h-16" />,
       color: 'from-teal-700 to-green-500',
       bgColor: 'from-blue-50 via-indigo-50 to-purple-100',
     },
     {
       name: 'Օդում',
-      icon: <Bird className="w-16 h-16 text-orange-600" />,
+      icon: <img src={iconMap.Bird} alt="Bird" className="w-16 h-16" />,
       color: 'from-orange-400 to-red-600',
       bgColor: 'from-emerald-50 via-teal-50 to-green-100',
     }
@@ -225,8 +232,8 @@ export default function HomePage() {
                       <span>{game.points}</span>
                     </div>
                     <div className={`text-xs font-bold flex items-center gap-1 ${game.difficulty === 'Բարձր' ? 'text-red-500' :
-                        game.difficulty === 'Միջին' ? 'text-amber-500' :
-                          'text-emerald-500'
+                      game.difficulty === 'Միջին' ? 'text-amber-500' :
+                        'text-emerald-500'
                       }`}>
                       {game.difficulty === 'Բարձր' && <Flame className="w-3 h-3" />}
                       {game.difficulty === 'Միջին' && <Zap className="w-3 h-3" />}
