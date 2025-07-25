@@ -39,21 +39,21 @@ export default function HomePage() {
 
   const teams = [
     { 
-      name: 'Սևանի Պահապաններ', 
+      name: 'Ջրում', 
       icon: <Waves className="w-16 h-16" />, 
       color: 'from-cyan-400 to-blue-500',
       bgColor: 'from-cyan-50 via-blue-50 to-sky-100',
       description: 'Ջրային աշխարհի հերոսներ',
     },
     { 
-      name: 'Ֆինանսական Հանճարներ', 
+      name: 'Ցամաքում', 
       icon: <Landmark className="w-16 h-16" />, 
       color: 'from-blue-500 to-indigo-600',
       bgColor: 'from-blue-50 via-indigo-50 to-purple-100',
       description: 'ՀՀ ՖՆ ռազմավարներ',
     },
     { 
-      name: 'ԱԶԲ Նորարարներ', 
+      name: 'Օդում', 
       icon: <Building2 className="w-16 h-16" />, 
       color: 'from-emerald-400 to-teal-600',
       bgColor: 'from-emerald-50 via-teal-50 to-green-100',
