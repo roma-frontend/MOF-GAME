@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Trophy, Medal, ArrowRight, Eye, RotateCcw, Save, ChevronRight, Sparkles, Users, Award, Target } from 'lucide-react';
+import { Trophy, Medal, ArrowRight, Eye, RotateCcw, Save, ChevronRight, Sparkles, Users, Award, Target, X, Check } from 'lucide-react';
 import Link from 'next/link';
 import { useGame } from './game-context';
 import { toast } from 'sonner';
@@ -19,7 +19,7 @@ export default function ScoresPage() {
   // Prevent hydration errors
   if (!mounted) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-sky-50 via-cyan-50 to-blue-100 p-6 flex items-center justify-center">
+      <div className="min-h-[100lvh] bg-gradient-to-br from-sky-50 via-cyan-50 to-blue-100 p-6 flex items-center justify-center">
         <div className="text-center">
           <div className="text-2xl text-sky-900">Բեռնվում է...</div>
         </div>
@@ -42,13 +42,73 @@ export default function ScoresPage() {
   };
 
   const handleReset = () => {
-    if (window.confirm('Վստա՞հ եք, որ ցանկանում եք զրոյացնել բոլոր արդյունքները:')) {
-      resetScores();
-      toast.success('Բոլոր արդյունքները զրոյացված են', {
-        description: 'Կարող եք սկսել նոր խաղ',
-        duration: 5000
-      });
-    }
+    toast.custom((t) => (
+      <div className="bg-gradient-to-br from-white/95 via-white/90 to-red-50/80 backdrop-blur-xl border border-red-200/50 rounded-2xl shadow-2xl p-6 max-w-md mx-auto">
+        <div className="flex flex-col items-center text-center space-y-4">
+          {/* Warning Icon */}
+          <div className="w-16 h-16 bg-gradient-to-br from-red-400 to-red-600 rounded-full flex items-center justify-center shadow-lg">
+            <RotateCcw className="w-8 h-8 text-white animate-pulse" />
+          </div>
+          
+          {/* Title */}
+          <h3 className="text-xl font-bold text-red-800">
+            Զրոյացնել արդյունքները
+          </h3>
+          
+          {/* Description */}
+          <div className="text-red-700 space-y-2">
+            <p className="font-medium">Վստա՞հ եք, որ ցանկանում եք զրոյացնել բոլոր արդյունքները:</p>
+            <p className="text-sm text-red-600">⚠️ Այս գործողությունը չի կարող հետ շրջվել</p>
+          </div>
+          
+          {/* Action Buttons */}
+          <div className="flex gap-3 w-full pt-2">
+            <button
+              onClick={() => {
+                toast.dismiss(t);
+                toast.info('Գործողությունը չեղարկված է', {
+                  icon: '❌',
+                  duration: 2000,
+                  style: {
+                    background: 'rgba(255, 255, 255, 0.95)',
+                    backdropFilter: 'blur(10px)',
+                    border: '1px solid rgba(156, 163, 175, 0.3)',
+                  }
+                });
+              }}
+              className="flex-1 px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl transition-all duration-200 flex items-center justify-center gap-2 hover:scale-105"
+            >
+              <X className="w-4 h-4" />
+              Չեղարկել
+            </button>
+            
+            <button
+              onClick={() => {
+                toast.dismiss(t);
+                resetScores();
+                toast.success('Բոլոր արդյունքները զրոյացված են', {
+                  description: 'Կարող եք սկսել նոր խաղ',
+                  icon: '🔄',
+                  duration: 5000,
+                  style: {
+                    background: 'rgba(255, 255, 255, 0.95)',
+                    backdropFilter: 'blur(10px)',
+                    border: '1px solid rgba(34, 197, 94, 0.3)',
+                  }
+                });
+              }}
+              className="flex-1 px-4 py-3 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold rounded-xl transition-all duration-200 flex items-center justify-center gap-2 hover:scale-105 shadow-lg"
+            >
+              <Check className="w-4 h-4" />
+              Հաստատել
+            </button>
+          </div>
+        </div>
+      </div>
+    ), {
+      duration: Infinity,
+      position: 'top-center',
+    });
   };
 
   const handleSave = () => {
@@ -85,14 +145,14 @@ export default function ScoresPage() {
   const progress = (completedGames / totalGames) * 100;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-sky-50 via-cyan-50 to-blue-100 p-6">
+    <div className="min-h-[100lvh] bg-gradient-to-br from-sky-50 via-cyan-50 to-blue-100 px-6 py-12">
       {/* Background decoration */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-cyan-300/20 rounded-full blur-3xl"></div>
         <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-300/20 rounded-full blur-3xl"></div>
       </div>
 
-      <div className="max-w-7xl mx-auto relative">
+      <div className="max-w-[1440px] mx-auto relative">
         {/* Header */}
         <div className={`text-center mb-10 transform transition-all duration-1000 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
           <div className="inline-flex items-center gap-3 mb-6">
@@ -190,14 +250,21 @@ export default function ScoresPage() {
                       <td className="py-4 px-4">
                         <div className="flex items-center gap-3">
                           <div className="relative">
-                            <Sparkles className={`w-6 h-6 ${isGameComplete ? 'text-emerald-500 animate-spin' : 'text-sky-400'}`} 
-                              style={{ animationDuration: '3s' }} />
+                            {/* Game color indicator */}
+                            <div className={`w-8 h-8 rounded-full bg-gradient-to-r ${game.color} flex items-center justify-center shadow-lg`}>
+                              <Sparkles className={`w-4 h-4 text-white ${isGameComplete ? 'animate-spin' : ''}`} 
+                                style={{ animationDuration: '3s' }} />
+                            </div>
                             {isGameComplete && (
                               <div className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-500 rounded-full animate-ping"></div>
                             )}
                           </div>
                           <div>
-                            <div className="font-bold text-sky-900">{game.name}</div>
+                            <div className="font-bold text-sky-900 flex items-center gap-2">
+                              {game.name}
+                              {/* Small color stripe */}
+                              <div className={`w-16 h-1 rounded-full bg-gradient-to-r ${game.color} opacity-60`}></div>
+                            </div>
                             <div className="text-xs text-sky-600">
                               {game.points.first}/{game.points.second}/{game.points.third} միավոր
                             </div>
@@ -206,7 +273,7 @@ export default function ScoresPage() {
                       </td>
                       {(['first', 'second', 'third'] as const).map((place, placeIndex) => (
                         <td key={place} className="py-4 px-4">
-                          <div className="flex justify-center gap-2">
+                          <div className="flex justify-center gap-4">
                             {teams.map((team) => {
                               const isSelected = result[place] === team.id;
                               const isOtherPlace = Object.values(result).includes(team.id) && !isSelected;
@@ -217,7 +284,7 @@ export default function ScoresPage() {
                                   onClick={() => handlePlaceClick(game.id, team.id, place)}
                                   disabled={isOtherPlace}
                                   className={`
-                                    relative w-14 h-14 rounded-xl flex items-center justify-center text-2xl
+                                    relative w-24 h-14 rounded-[8px] flex items-center justify-center text-2xl
                                     transition-all duration-300 transform hover:scale-110
                                     ${isSelected 
                                       ? `bg-gradient-to-br ${team.color} shadow-lg scale-110 ring-2 ring-white` 
@@ -238,6 +305,10 @@ export default function ScoresPage() {
                                       {place === 'third' && <Medal className="w-4 h-4 text-orange-500" />}
                                     </div>
                                   )}
+                                  {/* Game color accent for selected */}
+                                  {isSelected && (
+                                    <div className={`absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-4 h-1 rounded-full bg-gradient-to-r ${game.color} opacity-80`}></div>
+                                  )}
                                 </button>
                               );
                             })}
@@ -251,11 +322,27 @@ export default function ScoresPage() {
             </table>
           </div>
 
+          {/* Game Legend */}
+          <div className="mt-6 pt-4 border-t border-sky-200">
+            <h4 className="text-lg font-bold text-sky-900 mb-4 text-center">Խաղերի լեգենդ</h4>
+            <div className="flex flex-wrap justify-center gap-4">
+              {games.map(game => (
+                <div key={game.id} className="flex items-center gap-2 glass rounded-lg px-3 py-2 hover:scale-105 transition-transform">
+                  <div className={`w-4 h-4 rounded bg-gradient-to-r ${game.color} shadow-sm`}></div>
+                  <span className="text-sm font-medium text-sky-900">{game.name}</span>
+                  <span className="text-xs text-sky-600">
+                    ({game.points.first}/{game.points.second}/{game.points.third})
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
           {/* Instructions */}
-          <div className="mt-6 p-4 bg-sky-50 rounded-xl">
-            <p className="text-sm text-sky-700 text-center">
-              💡 Սեղմեք թիմի պատկերակին վրա՝ տեղը նշանակելու համար: 
-              Յուրաքանչյուր թիմ կարող է զբաղեցնել միայն մեկ տեղ յուրաքանչյուր խաղում:
+          <div className="mt-6 p-4 bg-gradient-to-r from-sky-50 to-cyan-50 rounded-xl border border-sky-200">
+            <p className="text-sm text-sky-700 text-center flex items-center justify-center gap-2">
+              💡 <span>Սեղմեք թիմի պատկերակին վրա՝ տեղը նշանակելու համար:</span>
+              <span className="text-sky-500">Յուրաքանչյուր թիմ կարող է զբաղեցնել միայն մեկ տեղ յուրաքանչյուր խաղում:</span>
             </p>
           </div>
         </div>

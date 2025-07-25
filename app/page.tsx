@@ -62,16 +62,55 @@ export default function HomePage() {
   ];
 
   const games = [
-    { name: 'Ճանաչիր Սևանը', icon: '🏞️', points: '20/15/10', difficulty: 'Միջին', color: 'from-cyan-400 to-blue-500' },
-    { name: 'Քարհավաք', icon: '💎', points: '40/25/15', difficulty: 'Բարձր', color: 'from-purple-400 to-pink-500' },
-    { name: 'Ճանաչիր ՖՆ', icon: '🏛️', points: '15/10/5', difficulty: 'Հեշտ', color: 'from-blue-400 to-indigo-500' },
-    { name: 'Ճանաչիր ԱԶԲ', icon: '🏦', points: '15/10/5', difficulty: 'Հեշտ', color: 'from-emerald-400 to-teal-500' },
-    { name: 'Թիմային խաղ', icon: '🤝', points: '35/20/10', difficulty: 'Բարձր', color: 'from-orange-400 to-red-500' }
+    { 
+      name: 'Ճանաչիր Սևանը', 
+      icon: '🏞️', 
+      points: '20/15/10', 
+      difficulty: 'Միջին', 
+      color: 'from-cyan-400 to-blue-500',
+      bgColor: 'bg-gradient-to-br from-cyan-50 to-blue-100',
+      description: 'Հայաստանի մարգարիտը՝ Սևան լիճը'
+    },
+    { 
+      name: 'Քարհավաք', 
+      icon: '💎', 
+      points: '40/25/15', 
+      difficulty: 'Բարձր', 
+      color: 'from-purple-400 to-pink-500',
+      bgColor: 'bg-gradient-to-br from-purple-50 to-pink-100',
+      description: 'Թանկարժեք քարերի աշխարհ'
+    },
+    { 
+      name: 'Ճանաչիր ՖՆ', 
+      icon: '🏛️', 
+      points: '15/10/5', 
+      difficulty: 'Հեշտ', 
+      color: 'from-blue-500 to-indigo-600',
+      bgColor: 'bg-gradient-to-br from-blue-50 to-indigo-100',
+      description: 'Ֆինանսների նախարարություն'
+    },
+    { 
+      name: 'Ճանաչիր ԱԶԲ', 
+      icon: '🏦', 
+      points: '15/10/5', 
+      difficulty: 'Հեշտ', 
+      color: 'from-emerald-400 to-teal-600',
+      bgColor: 'bg-gradient-to-br from-emerald-50 to-teal-100',
+      description: 'Ասիական զարգացման բանկ'
+    },
+    { 
+      name: 'Թիմային խաղ', 
+      icon: '🤝', 
+      points: '35/20/10', 
+      difficulty: 'Բարձր', 
+      color: 'from-orange-400 to-red-500',
+      bgColor: 'bg-gradient-to-br from-orange-50 to-red-100',
+      description: 'Համագործակցության ճանապարհ'
+    }
   ];
 
-
   return (
-    <div className={`min-h-screen bg-gradient-to-br ${teams[currentTeam].bgColor} transition-all duration-1000 overflow-hidden relative`}>
+    <div className={`min-h-[100lvh] bg-gradient-to-br ${teams[currentTeam].bgColor} transition-all duration-1000 overflow-hidden relative`}>
       {/* Animated Background Elements */}
       <div className="absolute inset-0">
         {/* Lake Sevan Waves */}
@@ -153,22 +192,6 @@ export default function HomePage() {
               </div>
             ))}
           </div>
-
-          {/* Team Indicators */}
-          {/* <div className="flex justify-center gap-4">
-            {teams.map((team, index) => (
-              <button
-                key={index}
-                onClick={() => {
-                  setCurrentTeam(index);
-                  toast.info(`Ընտրված է ${team.name} թիմը`);
-                }}
-                className={`h-3 rounded-full transition-all duration-300 hover:scale-110 ${
-                  index === currentTeam ? `bg-gradient-to-r ${team.color} w-24 shadow-lg` : 'bg-sky-300/50 w-16'
-                }`}
-              />
-            ))}
-          </div> */}
         </div>
 
         {/* Games Grid */}
@@ -182,37 +205,73 @@ export default function HomePage() {
             {games.map((game, index) => (
               <div 
                 key={game.name}
-                className="group relative overflow-hidden glass rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-500 hover:scale-105 hover:-translate-y-2 cursor-pointer"
+                className={`group relative overflow-hidden glass rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-500 hover:scale-105 hover:-translate-y-2 cursor-pointer ${game.bgColor}`}
                 style={{ animationDelay: `${index * 100}ms` }}
                 onClick={() => toast(`${game.name}`, { 
-                  description: `Դժվարություն: ${game.difficulty} | Միավորներ: ${game.points}`,
+                  description: `${game.description} | Դժվարություն: ${game.difficulty} | Միավորներ: ${game.points}`,
                   icon: game.icon 
                 })}
               >
+                {/* Game color accent */}
+                <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${game.color} rounded-t-2xl`} />
+                
                 <div className={`absolute inset-0 bg-gradient-to-br ${game.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`} />
                 
                 <div className="relative z-10">
                   <div className="text-5xl mb-3 transform group-hover:rotate-12 group-hover:scale-110 transition-all duration-300">{game.icon}</div>
                   <h3 className="text-lg font-bold text-sky-900 mb-2">{game.name}</h3>
                   
+                  {/* Game color stripe */}
+                  <div className={`w-full h-1 rounded-full bg-gradient-to-r ${game.color} mb-3 opacity-60 group-hover:opacity-100 transition-opacity duration-300`}></div>
+                  
                   <div className="space-y-1 text-sm">
                     <div className="flex items-center gap-2 text-amber-600 font-semibold">
                       <Trophy className="w-4 h-4" />
                       <span>{game.points}</span>
                     </div>
-                    <div className={`text-xs font-bold ${
+                    <div className={`text-xs font-bold flex items-center gap-1 ${
                       game.difficulty === 'Բարձր' ? 'text-red-500' : 
                       game.difficulty === 'Միջին' ? 'text-amber-500' : 
                       'text-emerald-500'
                     }`}>
+                      {game.difficulty === 'Բարձր' && <Flame className="w-3 h-3" />}
+                      {game.difficulty === 'Միջին' && <Zap className="w-3 h-3" />}
+                      {game.difficulty === 'Հեշտ' && <Star className="w-3 h-3" />}
                       {game.difficulty}
+                    </div>
+                    <div className="text-xs text-sky-600 mt-2 opacity-80 group-hover:opacity-100 transition-opacity">
+                      {game.description}
                     </div>
                   </div>
                 </div>
 
-                <div className="absolute -bottom-10 -right-10 w-20 h-20 bg-gradient-to-br from-cyan-400/20 to-blue-400/20 rounded-full blur-xl group-hover:w-32 group-hover:h-32 transition-all duration-500" />
+                {/* Animated background element */}
+                <div className={`absolute -bottom-10 -right-10 w-20 h-20 bg-gradient-to-br ${game.color} opacity-20 rounded-full blur-xl group-hover:w-32 group-hover:h-32 group-hover:opacity-30 transition-all duration-500`} />
+                
+                {/* Hover overlay */}
+                <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                  <div className="text-center">
+                    <div className={`w-8 h-8 mx-auto mb-2 bg-gradient-to-r ${game.color} rounded-full flex items-center justify-center`}>
+                      <Play className="w-4 h-4 text-white" />
+                    </div>
+                    <span className="text-sky-900 font-bold text-sm">Մանրամասն</span>
+                  </div>
+                </div>
               </div>
             ))}
+          </div>
+
+          {/* Games Legend */}
+          <div className="mt-8 text-center">
+            <h3 className="text-xl font-bold text-sky-900 mb-4">Խաղերի գունային ծածկագիր</h3>
+            <div className="flex flex-wrap justify-center gap-3">
+              {games.map(game => (
+                <div key={game.name} className="flex items-center gap-2 glass rounded-full px-4 py-2 hover:scale-105 transition-transform">
+                  <div className={`w-3 h-3 rounded-full bg-gradient-to-r ${game.color}`}></div>
+                  <span className="text-sm font-medium text-sky-900">{game.name}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -242,18 +301,56 @@ export default function HomePage() {
         {/* Statistics */}
         <div className={`grid grid-cols-3 gap-6 max-w-3xl mx-auto transform transition-all duration-1000 delay-900 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
           {[
-            { value: '3', label: 'Թիմեր', icon: <Users className="w-6 h-6 text-cyan-500" /> },
-            { value: '5', label: 'Մրցույթներ', icon: <Target className="w-6 h-6 text-emerald-500" /> },
-            { value: '125', label: 'Մաքս միավոր', icon: <Trophy className="w-6 h-6 text-amber-500" /> }
+            { value: '3', label: 'Թիմեր', icon: <Users className="w-6 h-6 text-cyan-500" />, color: 'from-cyan-400 to-blue-500' },
+            { value: '5', label: 'Մրցույթներ', icon: <Target className="w-6 h-6 text-emerald-500" />, color: 'from-emerald-400 to-teal-500' },
+            { value: '125', label: 'Մաքս միավոր', icon: <Trophy className="w-6 h-6 text-amber-500" />, color: 'from-yellow-400 to-orange-500' }
           ].map((stat, index) => (
-            <div key={index} className="text-center glass rounded-2xl p-6 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
-              <div className="flex justify-center mb-2">{stat.icon}</div>
-              <div className="text-4xl font-black text-sky-900 mb-2">{stat.value}</div>
-              <div className="text-sky-700 font-semibold">{stat.label}</div>
+            <div key={index} className="text-center glass rounded-2xl p-6 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 relative overflow-hidden">
+              {/* Subtle gradient background */}
+              <div className={`absolute inset-0 bg-gradient-to-br ${stat.color} opacity-5`}></div>
+              
+              <div className="relative z-10">
+                <div className="flex justify-center mb-2">{stat.icon}</div>
+                <div className="text-4xl font-black text-sky-900 mb-2">{stat.value}</div>
+                <div className="text-sky-700 font-semibold">{stat.label}</div>
+              </div>
+              
+              {/* Color accent */}
+              <div className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r ${stat.color} opacity-50`}></div>
             </div>
           ))}
         </div>
       </div>
+
+      {/* CSS for animations */}
+      <style jsx>{`
+        @keyframes float {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-20px); }
+        }
+
+        @keyframes shimmer {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(100%); }
+        }
+
+        .animate-float {
+          animation: float 6s ease-in-out infinite;
+        }
+
+        .animate-shimmer {
+          background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%);
+          background-size: 200% 100%;
+          animation: shimmer 2s linear infinite;
+        }
+
+        .glass {
+          background: rgba(255, 255, 255, 0.7);
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
+          border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+      `}</style>
     </div>
   );
 }

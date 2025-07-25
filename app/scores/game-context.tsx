@@ -6,6 +6,8 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 export interface Game {
   id: number;
   name: string;
+  color: string;
+  bgColor: string;
   points: {
     first: number;
     second: number;
@@ -28,11 +30,19 @@ export interface GameResults {
   };
 }
 
+// Новый тип для детального подсчета очков по играм
+export interface DetailedScores {
+  [teamId: number]: {
+    [gameId: number]: number;
+  };
+}
+
 interface GameContextType {
   games: Game[];
   teams: Team[];
   gameResults: GameResults;
   totalScores: { [teamId: number]: number };
+  detailedScores: DetailedScores; // Детальные очки по играм
   isAllGamesCompleted: boolean;
   winner: Team | null;
   setTeamPlace: (gameId: number, teamId: number, place: 'first' | 'second' | 'third') => void;
@@ -41,15 +51,44 @@ interface GameContextType {
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
 
-// Статические данные
+// Статические данные с цветами для игр
 const GAMES: Game[] = [
-  { id: 1, name: 'Ճանաչիր Սևանը', points: { first: 20, second: 15, third: 10 } },
-  { id: 2, name: 'Քարհավաք', points: { first: 40, second: 25, third: 15 } },
-  { id: 3, name: 'Ճանաչիր ՖՆ', points: { first: 15, second: 10, third: 5 } },
-  { id: 4, name: 'Ճանաչիր ԱԶԲ', points: { first: 15, second: 10, third: 5 } },
-  { id: 5, name: 'Թիմային խաղ', points: { first: 35, second: 20, third: 10 } },
+  {
+    id: 1,
+    name: 'Ճանաչիր Սևանը',
+    color: 'from-indigo-500 to-purple-600',
+    bgColor: 'bg-gradient-to-r from-indigo-50 to-purple-100',
+    points: { first: 20, second: 15, third: 10 }
+  },
+  {
+    id: 2,
+    name: 'Քարհավաք',
+    color: 'from-rose-400 to-pink-600',
+    bgColor: 'bg-gradient-to-r from-rose-50 to-pink-100',
+    points: { first: 40, second: 25, third: 15 }
+  },
+  {
+    id: 3,
+    name: 'Ճանաչիր ՖՆ',
+    color: 'from-amber-400 to-orange-500',
+    bgColor: 'bg-gradient-to-r from-amber-50 to-orange-100',
+    points: { first: 15, second: 10, third: 5 }
+  },
+  {
+    id: 4,
+    name: 'Ճանաչիր ԱԶԲ',
+    color: 'from-emerald-500 to-green-600',
+    bgColor: 'bg-gradient-to-r from-emerald-50 to-green-100',
+    points: { first: 15, second: 10, third: 5 }
+  },
+  {
+    id: 5,
+    name: 'Թիմային խաղ',
+    color: 'from-blue-500 to-cyan-600',
+    bgColor: 'bg-gradient-to-r from-blue-50 to-cyan-100',
+    points: { first: 35, second: 20, third: 10 }
+  },
 ];
-
 
 const TEAMS: Team[] = [
   { id: 1, name: 'Ջրում', color: 'from-cyan-400 to-blue-500', icon: '🌊' },
@@ -63,6 +102,17 @@ export function GameProvider({ children }: { children: ReactNode }) {
     const initial: { [teamId: number]: number } = {};
     TEAMS.forEach(team => {
       initial[team.id] = 0;
+    });
+    return initial;
+  });
+  
+  const [detailedScores, setDetailedScores] = useState<DetailedScores>(() => {
+    const initial: DetailedScores = {};
+    TEAMS.forEach(team => {
+      initial[team.id] = {};
+      GAMES.forEach(game => {
+        initial[team.id][game.id] = 0;
+      });
     });
     return initial;
   });
@@ -93,7 +143,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       }
     } catch (error) {
       console.error('Error loading gameResults:', error);
-      localStorage.removeItem('gameResults'); // Очищаем поврежденные данные
+      localStorage.removeItem('gameResults');
     }
   }, []);
 
@@ -108,14 +158,19 @@ export function GameProvider({ children }: { children: ReactNode }) {
     }
   }, [gameResults]);
 
-  // Вычисление общих очков
+  // Вычисление общих очков и детальных очков
   useEffect(() => {
-    const calculateTotalScores = () => {
+    const calculateScores = () => {
       const newTotalScores: { [teamId: number]: number } = {};
+      const newDetailedScores: DetailedScores = {};
       
       // Инициализируем все команды нулями
       TEAMS.forEach(team => {
         newTotalScores[team.id] = 0;
+        newDetailedScores[team.id] = {};
+        GAMES.forEach(game => {
+          newDetailedScores[team.id][game.id] = 0;
+        });
       });
 
       // Подсчитываем очки
@@ -126,26 +181,34 @@ export function GameProvider({ children }: { children: ReactNode }) {
         if (!game) return;
         
         if (result.first && typeof result.first === 'number' && newTotalScores.hasOwnProperty(result.first)) {
-          newTotalScores[result.first] = (newTotalScores[result.first] || 0) + game.points.first;
+          const points = game.points.first;
+          newTotalScores[result.first] = (newTotalScores[result.first] || 0) + points;
+          newDetailedScores[result.first][game.id] = points;
         }
         if (result.second && typeof result.second === 'number' && newTotalScores.hasOwnProperty(result.second)) {
-          newTotalScores[result.second] = (newTotalScores[result.second] || 0) + game.points.second;
+          const points = game.points.second;
+          newTotalScores[result.second] = (newTotalScores[result.second] || 0) + points;
+          newDetailedScores[result.second][game.id] = points;
         }
         if (result.third && typeof result.third === 'number' && newTotalScores.hasOwnProperty(result.third)) {
-          newTotalScores[result.third] = (newTotalScores[result.third] || 0) + game.points.third;
+          const points = game.points.third;
+          newTotalScores[result.third] = (newTotalScores[result.third] || 0) + points;
+          newDetailedScores[result.third][game.id] = points;
         }
       });
 
-      return newTotalScores;
+      return { newTotalScores, newDetailedScores };
     };
 
-    const newScores = calculateTotalScores();
-    setTotalScores(newScores);
+    const { newTotalScores, newDetailedScores } = calculateScores();
+    setTotalScores(newTotalScores);
+    setDetailedScores(newDetailedScores);
     
     try {
-      localStorage.setItem('totalScores', JSON.stringify(newScores));
+      localStorage.setItem('totalScores', JSON.stringify(newTotalScores));
+      localStorage.setItem('detailedScores', JSON.stringify(newDetailedScores));
     } catch (error) {
-      console.error('Error saving totalScores:', error);
+      console.error('Error saving scores:', error);
     }
   }, [gameResults]);
 
@@ -173,12 +236,10 @@ export function GameProvider({ children }: { children: ReactNode }) {
     setGameResults(prev => {
       const newResults = { ...prev };
       
-      // Инициализируем объект для игры, если его нет
       if (!newResults[gameId]) {
         newResults[gameId] = {};
       }
       
-      // Удаляем команду из других мест в этой игре
       const places: Array<'first' | 'second' | 'third'> = ['first', 'second', 'third'];
       places.forEach(p => {
         if (newResults[gameId][p] === teamId) {
@@ -186,18 +247,15 @@ export function GameProvider({ children }: { children: ReactNode }) {
         }
       });
       
-      // Если команда уже занимает это место, убираем её
       if (newResults[gameId][place] === teamId) {
         delete newResults[gameId][place];
       } else {
-        // Проверяем, не занято ли это место другой командой
         const currentTeam = newResults[gameId][place];
         if (!currentTeam) {
           newResults[gameId][place] = teamId;
         }
       }
       
-      // Если в игре нет результатов, удаляем её из объекта
       if (Object.keys(newResults[gameId]).length === 0) {
         delete newResults[gameId];
       }
@@ -210,14 +268,23 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const resetScores = () => {
     setGameResults({});
     const emptyScores: { [teamId: number]: number } = {};
+    const emptyDetailedScores: DetailedScores = {};
+    
     TEAMS.forEach(team => {
       emptyScores[team.id] = 0;
+      emptyDetailedScores[team.id] = {};
+      GAMES.forEach(game => {
+        emptyDetailedScores[team.id][game.id] = 0;
+      });
     });
+    
     setTotalScores(emptyScores);
+    setDetailedScores(emptyDetailedScores);
     
     try {
       localStorage.removeItem('gameResults');
       localStorage.removeItem('totalScores');
+      localStorage.removeItem('detailedScores');
     } catch (error) {
       console.error('Error clearing localStorage:', error);
     }
@@ -229,6 +296,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       teams: TEAMS, 
       gameResults, 
       totalScores,
+      detailedScores,
       isAllGamesCompleted,
       winner,
       setTeamPlace, 
