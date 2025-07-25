@@ -36,6 +36,8 @@ export default function ScoresPage() {
 
   const handlePlaceClick = (gameId: number, teamId: number, place: 'first' | 'second' | 'third') => {
     console.log('Attempting to select:', { gameId, teamId, place });
+    
+    // Вызываем setTeamPlace без дополнительных проверок
     setTeamPlace(gameId, teamId, place);
 
     const placeName = place === 'first' ? '1-ին' : place === 'second' ? '2-րդ' : '3-րդ';
@@ -44,7 +46,7 @@ export default function ScoresPage() {
 
     const TeamIcon = iconMap[team?.icon as keyof typeof iconMap];
 
-    toast.success(`${team?.name} թիմը զբաղեցրեց ${placeName} տեղը`, {
+    toast.success(`${team?.name} թիմը ընտրված է ${placeName} տեղի համար`, {
       description: `${game?.name} խաղում`,
       icon: TeamIcon ? <TeamIcon className="w-4 h-4" /> : '🏆',
       duration: 3000
@@ -129,20 +131,6 @@ export default function ScoresPage() {
     });
   };
 
-  const getTeamIcon = (teamId: number) => {
-    const team = teams.find(t => t.id === teamId);
-    return team?.icon || '';
-  };
-
-  const getTeamName = (teamId: number) => {
-    const team = teams.find(t => t.id === teamId);
-    return team?.name || '';
-  };
-
-  const isPlaceOccupied = (gameId: number, place: 'first' | 'second' | 'third') => {
-    const result = gameResults[gameId];
-    return result && result[place];
-  };
   const getCompletedGamesCount = () => {
     return games.filter(game => {
       const result = gameResults[game.id];
@@ -154,13 +142,6 @@ export default function ScoresPage() {
     }).length;
   };
 
-  useEffect(() => {
-    console.log('Game results:', gameResults);
-    console.log('Completed games:', completedGames);
-    console.log('Progress:', progress);
-  }, [gameResults]);
-
-  // Используйте одну из этих функций в зависимости от требований
   const completedGames = getCompletedGamesCount();
   const totalGames = games.length;
   const progress = totalGames > 0 ? Math.min((completedGames / totalGames) * 100, 100) : 0;
@@ -196,7 +177,7 @@ export default function ScoresPage() {
               <div className="w-full bg-sky-200 rounded-full h-3 overflow-hidden">
                 <div
                   className="h-full bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full transition-all duration-1000 ease-out relative"
-                  style={{ width: '100%' }} // Тест с полным заполнением
+                  style={{ width: `${progress}%` }}
                 >
                   <div className="absolute inset-0 bg-white/30 animate-pulse"></div>
                 </div>
@@ -311,13 +292,13 @@ export default function ScoresPage() {
                                     handlePlaceClick(game.id, team.id, place);
                                   }}
                                   className={`
-        relative w-24 h-14 rounded-[8px] flex items-center justify-center
-        transition-all duration-200
-        ${isSelected
+                                    relative w-24 h-14 rounded-[8px] flex items-center justify-center
+                                    transition-all duration-200
+                                    ${isSelected
                                       ? `bg-gradient-to-br ${team.color} text-white scale-105 shadow-lg`
-                                      : 'bg-white/90 hover:bg-white text-gray-800 shadow-md'
+                                      : 'bg-white/90 hover:bg-white text-gray-800 shadow-md hover:scale-105'
                                     }
-      `}
+                                  `}
                                 >
                                   {TeamIcon && <TeamIcon className="w-8 h-8" />}
                                   {isSelected && (
@@ -360,7 +341,7 @@ export default function ScoresPage() {
           <div className="mt-6 p-4 bg-gradient-to-r from-sky-50 to-cyan-50 rounded-xl border border-sky-200">
             <p className="text-sm text-sky-700 text-center flex items-center justify-center gap-2">
               💡 <span>Սեղմեք թիմի պատկերակին վրա՝ տեղը նշանակելու համար:</span>
-              <span className="text-sky-500">Յուրաքանչյուր թիմ կարող է զբաղեցնել միայն մեկ տեղ յուրաքանչյուր խաղում:</span>
+              <span className="text-orange-600 font-medium">⚠️ Նույն թիմը կարող է զբաղեցնել մի քանի տեղ մեկ խաղում:</span>
             </p>
           </div>
         </div>

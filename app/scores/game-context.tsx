@@ -244,14 +244,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         newResults[gameId] = {};
       }
 
-      // Удаляем команду из других мест в этой игре
-      for (const key in newResults[gameId]) {
-        if (newResults[gameId][key as keyof typeof newResults[number]] === teamId) {
-          delete newResults[gameId][key as keyof typeof newResults[number]];
-        }
-      }
-
-      // Устанавливаем новое место
+      // Просто устанавливаем новое место без удаления из других мест
       newResults[gameId][place] = teamId;
 
       return newResults;
