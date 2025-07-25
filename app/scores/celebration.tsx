@@ -27,11 +27,11 @@ interface Confetti {
   rotationSpeed: number;
 }
 
-// Маппинг строковых названий иконок к React компонентам
+// Маппинг строковых названий иконок к путям изображений
 const iconMap = {
-  Fish: Fish,
-  Trees: Trees,
-  Bird: Bird
+  Fish: '/icons/fish.png',
+  Trees: '/icons/plant.png',
+  Bird: '/icons/bird.png'
 };
 
 export default function Celebration({ winner, isVisible, onClose }: CelebrationProps) {
@@ -39,8 +39,8 @@ export default function Celebration({ winner, isVisible, onClose }: CelebrationP
   const [showFireworks, setShowFireworks] = useState(false);
   const { teams } = useGame();
 
-  // Получаем компонент иконки
-  const IconComponent = iconMap[winner.icon as keyof typeof iconMap];
+  // Получаем путь к изображению иконки
+  const iconPath = iconMap[winner.icon as keyof typeof iconMap];
 
   useEffect(() => {
     if (isVisible) {
@@ -161,18 +161,36 @@ export default function Celebration({ winner, isVisible, onClose }: CelebrationP
         {/* Winner Icon */}
         <div className="mb-12">
           <div className="mb-10 filter drop-shadow-2xl">
-            {IconComponent && (
+            {iconPath && (
               <div 
                 className={`w-40 h-40 mx-auto animate-float bg-gradient-to-r ${winner.color} rounded-full flex items-center justify-center shadow-2xl`}
               >
-                <IconComponent className="w-32 h-32 text-white" />
+                <img 
+                  src={iconPath} 
+                  alt={winner.name} 
+                  className="w-32 h-32 object-contain"
+                />
               </div>
             )}
           </div>
           <div className={`inline-flex items-center gap-4 bg-gradient-to-r ${winner.color} text-white font-bold py-6 px-12 rounded-full text-2xl shadow-2xl transform hover:scale-105 transition-all duration-300`}>
-            {IconComponent && <IconComponent className="w-10 h-10 animate-spin" style={{ animationDuration: '3s' }} />}
+            {iconPath && (
+              <img 
+                src={iconPath} 
+                alt={winner.name} 
+                className="w-10 h-10 animate-spin object-contain" 
+                style={{ animationDuration: '3s' }}
+              />
+            )}
             <span className="text-3xl font-black">ՉԵՄՊԻՈՆ</span>
-            {IconComponent && <IconComponent className="w-10 h-10 animate-spin" style={{ animationDirection: 'reverse', animationDuration: '3s' }} />}
+            {iconPath && (
+              <img 
+                src={iconPath} 
+                alt={winner.name} 
+                className="w-10 h-10 animate-spin object-contain" 
+                style={{ animationDirection: 'reverse', animationDuration: '3s' }}
+              />
+            )}
           </div>
         </div>
 

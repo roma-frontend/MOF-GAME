@@ -1,17 +1,17 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Trophy, Medal, ArrowRight, Eye, RotateCcw, Save, ChevronRight, Sparkles, Users, Award, Target, X, Check, Fish, Trees, Bird } from 'lucide-react';
+import { Trophy, Medal, Eye, RotateCcw, Save, ChevronRight, Sparkles, Target, X, Check } from 'lucide-react';
 import Link from 'next/link';
 import { useGame } from './game-context';
 import { toast } from 'sonner';
 
 // Маппинг строковых названий иконок к React компонентам
-const iconMap = {
-  Fish: Fish,
-  Trees: Trees,
-  Bird: Bird
-};
+  const iconMap = {
+    Fish: '/icons/fish.png',
+    Trees: '/icons/plant.png',
+    Bird: '/icons/bird.png'
+  };
 
 export default function ScoresPage() {
   const { games, teams, gameResults, totalScores, setTeamPlace, resetScores } = useGame();
@@ -36,7 +36,7 @@ export default function ScoresPage() {
 
   const handlePlaceClick = (gameId: number, teamId: number, place: 'first' | 'second' | 'third') => {
     console.log('Attempting to select:', { gameId, teamId, place });
-    
+
     // Вызываем setTeamPlace без дополнительных проверок
     setTeamPlace(gameId, teamId, place);
 
@@ -44,18 +44,23 @@ export default function ScoresPage() {
     const team = teams.find(t => t.id === teamId);
     const game = games.find(g => g.id === gameId);
 
-    const TeamIcon = iconMap[team?.icon as keyof typeof iconMap];
+    const teamIconSrc = iconMap[team?.icon as keyof typeof iconMap];
 
     toast.success(`${team?.name} թիմը ընտրված է ${placeName} տեղի համար`, {
       description: `${game?.name} խաղում`,
-      icon: TeamIcon ? <TeamIcon className="w-4 h-4" /> : '🏆',
+      icon: teamIconSrc ? (
+        <img
+          src={teamIconSrc}
+          alt={team?.name}
+          className="w-4 h-4"
+        />
+      ) : '🏆',
       duration: 3000
     });
-  };
-
+  }
   const handleReset = () => {
     toast.custom((t) => (
-      <div className="bg-gradient-to-br from-white/95 via-white/90 to-red-50/80 backdrop-blur-xl border border-red-200/50 rounded-2xl shadow-2xl p-6 max-w-md mx-auto">
+      <div className="bg-gradient-to-br from-white/95 via-white/90 to-red-50/80 backdrop-blur-xl border border-red-200/50 rounded-2xl shadow-2xl p-6 max-w-lg mx-auto">
         <div className="flex flex-col items-center text-center space-y-4">
           {/* Warning Icon */}
           <div className="w-16 h-16 bg-gradient-to-br from-red-400 to-red-600 rounded-full flex items-center justify-center shadow-lg">
@@ -196,7 +201,11 @@ export default function ScoresPage() {
                   style={{ animationDelay: `${index * 100}ms` }}
                 >
                   <div className="text-3xl mb-2">
-                    {TeamIcon && <TeamIcon className="w-12 h-12 mx-auto text-sky-700" />}
+                    <img
+                      src={iconMap[team.icon as keyof typeof iconMap]}
+                      alt={team.name}
+                      className="w-12 h-12 mx-auto"
+                    />
                   </div>
                   <h3 className="text-lg font-bold text-sky-900">{team.name}</h3>
                   <div className="text-3xl font-black text-sky-800 mt-2">
@@ -300,7 +309,11 @@ export default function ScoresPage() {
                                     }
                                   `}
                                 >
-                                  {TeamIcon && <TeamIcon className="w-8 h-8" />}
+                                  <img
+                                    src={iconMap[team.icon as keyof typeof iconMap]}
+                                    alt={team.name}
+                                    className="w-12 h-12 mx-auto"
+                                  />
                                   {isSelected && (
                                     <div className="absolute -top-2 -right-2">
                                       {place === 'first' && <Trophy className="w-5 h-5 text-yellow-400" />}

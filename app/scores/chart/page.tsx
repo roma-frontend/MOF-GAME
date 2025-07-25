@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, JSX } from 'react';
-import { Trophy, Medal, Fish, ArrowLeft, Waves, Building2, Landmark, TrendingUp, Clock, Target, Star, Award, Crown, Zap, AlertTriangle, Users, ChevronUp, ChevronDown, Timer, GamepadIcon, BarChart3, FishSymbol, Trees, Bird } from 'lucide-react';
+import { Trophy, Medal, Fish, ArrowLeft, TrendingUp, Clock, Target, Star, AlertTriangle, ChevronUp, ChevronDown, Timer, GamepadIcon, BarChart3, FishSymbol, Trees, Bird } from 'lucide-react';
 import Link from 'next/link';
 import { toast } from 'sonner';
 import { useGame } from '../game-context';
@@ -20,12 +20,11 @@ export default function ChartPage() {
   });
 
   const iconMap = {
-    FishSymbol: FishSymbol,
-    Trees: Trees,
-    Bird: Bird
+    Fish: '/icons/fish.png',
+    Trees: '/icons/plant.png',
+    Bird: '/icons/bird.png'
   };
 
-  const IconComponent = iconMap[winner?.icon as keyof typeof iconMap];
 
   // Анимированные детальные очки по играм
   const [animatedDetailedScores, setAnimatedDetailedScores] = useState<{ [teamId: number]: { [gameId: number]: number } }>(() => {
@@ -311,10 +310,10 @@ export default function ChartPage() {
     return stack;
   };
 
-  const teamIcons: { [key: number]: JSX.Element } = {
-    1: <Fish className="w-12 h-12" />,
-    2: <Trees className="w-12 h-12" />,
-    3: <Bird className="w-12 h-12" />
+  const teamIcons: { [key: number]: string } = {
+    1: '/icons/fish.png',
+    2: '/icons/plant.png',
+    3: '/icons/bird.png'
   };
 
   const leaderInfo = getLeaderInfo();
@@ -407,20 +406,31 @@ export default function ChartPage() {
                 🎉 Բոլոր խաղերը ավարտված են 🎉
               </div>
               {winners.length === 1 ? (
-                <div className="text-2xl text-sky-900">
-                  Հաղթողը` <span className={`font-black text-3xl bg-clip-text text-transparent bg-gradient-to-r ${winners[0].color}`}>
-                    {teamIcons[winners[0].id]} Թիմ {winners[0].name}
+                <div className="text-2xl text-sky-900 flex items-center justify-center gap-3">
+                  Հաղթողը`
+                  <span className={`font-black text-3xl bg-clip-text text-transparent bg-gradient-to-r ${winners[0].color} flex items-center gap-2`}>
+                    <img
+                      src={teamIcons[winners[0].id]}
+                      alt={winners[0].name}
+                      className="w-8 h-8"
+                    />
+                    Թիմ {winners[0].name}
                   </span>
                 </div>
               ) : (
-                <div className="text-2xl text-sky-900">
-                  <AlertTriangle className="inline w-6 h-6 text-amber-500 mr-2" />
+                <div className="text-2xl text-sky-900 flex items-center justify-center gap-2 flex-wrap">
+                  <AlertTriangle className="inline w-6 h-6 text-amber-500" />
                   Հավասար հաշիվ: {winners.map((w, i) => (
-                    <span key={w.id}>
-                      <span className={`font-black text-3xl bg-clip-text text-transparent bg-gradient-to-r ${w.color}`}>
+                    <span key={w.id} className="flex items-center gap-2">
+                      <span className={`font-black text-3xl bg-clip-text text-transparent bg-gradient-to-r ${w.color} flex items-center gap-2`}>
+                        <img
+                          src={teamIcons[w.id]}
+                          alt={w.name}
+                          className="w-8 h-8"
+                        />
                         {w.name}
                       </span>
-                      {i < winners.length - 1 && ' և '}
+                      {i < winners.length - 1 && <span className="text-sky-700">և</span>}
                     </span>
                   ))}
                 </div>
@@ -532,12 +542,10 @@ export default function ChartPage() {
                     <div
                       className="w-full rounded-[1.5rem] shadow-2xl transition-all duration-700 ease-out relative overflow-hidden cursor-pointer hover:scale-105 group"
                       style={{
-                        height: `${Math.max(height * 4, score > 0 ? 60 : 30)}px`,
+                        height: `${Math.max(height * 5, score > 0 ? 120 : 60)}px`,
+                        minHeight: '300px',
+                        maxHeight: '700px',
                         transform: score > 0 ? 'scale(1)' : 'scale(0.8)',
-                      }}
-                      onClick={() => {
-                        setSelectedTeamHistory(team.id);
-                        setShowHistory(true);
                       }}
                     >
                       {/* Game breakdown or solid color */}
@@ -617,18 +625,18 @@ export default function ChartPage() {
                           )}
                         </div>
                       )}
-
-                      <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center rounded-[8px]">
-                        <span className="text-white font-bold text-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                          Տեսնել մանրամասն
-                        </span>
-                      </div>
                     </div>
                   </div>
 
                   {/* Team Info */}
                   <div className="mt-6 flex flex-col items-center text-center">
-                    <div className="text-sky-600 mb-2">{teamIcons[team.id]}</div>
+                    <div className="text-sky-600 mb-2">
+                      <img
+                        src={teamIcons[team.id]}
+                        alt={team.name}
+                        className="w-12 h-12 mx-auto"
+                      />
+                    </div>
                     <div className="text-2xl font-bold text-sky-900">{team.name}</div>
 
                     {/* Progress indicator */}
@@ -762,19 +770,24 @@ export default function ChartPage() {
                         <div className="flex items-center gap-1">
                           <Trophy className="w-4 h-4 text-yellow-500" />
                           <span className="text-sky-900 text-lg">
-                            {teams.find(t => t.id === result.first)?.icon === "Fish" && <Fish className="w-6 h-6" />}
-                            {teams.find(t => t.id === result.first)?.icon === "Trees" && <Trees className="w-6 h-6" />}
-                            {teams.find(t => t.id === result.first)?.icon === "Bird" && <Bird className="w-6 h-6" />}
+                            <img
+                              src={iconMap[teams.find(t => t.id === result.first)?.icon as keyof typeof iconMap]}
+                              alt={teams.find(t => t.id === result.first)?.name}
+                              className="w-6 h-6"
+                            />
                           </span>
                         </div>
                       )}
+
                       {result?.second && (
                         <div className="flex items-center gap-1">
                           <Medal className="w-4 h-4 text-gray-400" />
                           <span className="text-sky-900 text-lg">
-                            {teams.find(t => t.id === result.second)?.icon === "Fish" && <Fish className="w-6 h-6" />}
-                            {teams.find(t => t.id === result.second)?.icon === "Trees" && <Trees className="w-6 h-6" />}
-                            {teams.find(t => t.id === result.second)?.icon === "Bird" && <Bird className="w-6 h-6" />}
+                            <img
+                              src={iconMap[teams.find(t => t.id === result.second)?.icon as keyof typeof iconMap]}
+                              alt={teams.find(t => t.id === result.second)?.name}
+                              className="w-6 h-6"
+                            />
                           </span>
                         </div>
                       )}
@@ -783,9 +796,11 @@ export default function ChartPage() {
                         <div className="flex items-center gap-1">
                           <Medal className="w-4 h-4 text-orange-500" />
                           <span className="text-sky-900 text-lg">
-                            {teams.find(t => t.id === result.third)?.icon === "Fish" && <Fish className="w-6 h-6" />}
-                            {teams.find(t => t.id === result.third)?.icon === "Trees" && <Trees className="w-6 h-6" />}
-                            {teams.find(t => t.id === result.third)?.icon === "Bird" && <Bird className="w-6 h-6" />}
+                            <img
+                              src={iconMap[teams.find(t => t.id === result.third)?.icon as keyof typeof iconMap]}
+                              alt={teams.find(t => t.id === result.third)?.name}
+                              className="w-6 h-6"
+                            />
                           </span>
                         </div>
                       )}
@@ -822,13 +837,13 @@ export default function ChartPage() {
                   return (
                     <div key={team.id} className="glass rounded-xl p-4">
                       <div className="flex items-center gap-2 mb-3">
-                        {IconComponent && (
-                          <div
-                            className={`w-10 h-10 animate-float bg-gradient-to-r ${team?.color} rounded-full flex items-center justify-center shadow-2xl`}
-                          >
-                            <IconComponent className="w-6 h-6 text-white" />
-                          </div>
-                        )}
+                        <div className={`w-10 h-10 animate-float bg-gradient-to-r ${team?.color} rounded-full flex items-center justify-center shadow-2xl`}>
+                          <img
+                            src={iconMap[team.icon as keyof typeof iconMap]}
+                            alt={team.name}
+                            className="w-6 h-6"
+                          />
+                        </div>
                         <h4 className="font-bold text-sky-900">{team.name}</h4>
                       </div>
 
