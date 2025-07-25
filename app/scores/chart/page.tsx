@@ -449,7 +449,6 @@ export default function ChartPage() {
                   <div key={team.id} className="flex items-center gap-2">
                     <div className="glass rounded-2xl px-6 py-3 shadow-lg hover:scale-105 transition-transform">
                       <div className="flex items-center gap-2">
-                        <span className="text-4xl">{team.icon}</span>
                         <span className={`text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r ${team.color}`}>
                           {team.name} թիմը
                         </span>
