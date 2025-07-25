@@ -15,7 +15,7 @@ export default function HomePage() {
     setIsVisible(true);
     toast.success('Բարի գալուստ Մեծ Խաղ! 🎉', {
       description: 'Պատրա՞ստ եք էպիկական արկածախնդրության',
-      duration: 5000,
+      duration: 2000,
     });
     
     const teamInterval = setInterval(() => {
@@ -155,7 +155,7 @@ export default function HomePage() {
           </div>
 
           {/* Team Indicators */}
-          <div className="flex justify-center gap-4">
+          {/* <div className="flex justify-center gap-4">
             {teams.map((team, index) => (
               <button
                 key={index}
@@ -168,7 +168,7 @@ export default function HomePage() {
                 }`}
               />
             ))}
-          </div>
+          </div> */}
         </div>
 
         {/* Games Grid */}
