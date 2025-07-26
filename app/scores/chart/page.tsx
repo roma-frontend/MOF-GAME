@@ -451,7 +451,7 @@ export default function ChartPage() {
                   <Trophy className="w-8 h-8 text-yellow-500 animate-bounce" />
                 )}
 
-                {leaderInfo.type === 'tie' ? 'Առաջատարներ:' : 'Առաջատարն է:'}
+                {leaderInfo.type === 'tie' ? 'Առաջատարներ:' : 'Առաջատարն է՝'}
               </div>
 
               <div className="mt-4 flex items-center justify-center gap-4 flex-wrap">
@@ -459,7 +459,7 @@ export default function ChartPage() {
                   <div key={team.id} className="flex items-center gap-2">
                     <div className="glass rounded-2xl px-6 py-3 shadow-lg hover:scale-105 transition-transform">
                       <div className="flex items-center gap-2">
-                        <span className={`text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r ${team.color}`}>
+                        <span className={`text-4xl font-black bg-clip-text text-transparent bg-gradient-to-r ${team.color}`}>
                           {team.name} թիմը
                         </span>
                         <span className="text-xl text-sky-700 font-bold">
