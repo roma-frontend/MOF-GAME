@@ -459,10 +459,10 @@ export default function ChartPage() {
                   <div key={team.id} className="flex items-center gap-2">
                     <div className="glass rounded-2xl px-6 py-3 shadow-lg hover:scale-105 transition-transform">
                       <div className="flex items-center gap-2">
-                        <span className={`text-4xl font-black bg-clip-text text-transparent bg-gradient-to-r ${team.color}`}>
+                        <span className={`text-[50px] font-black bg-clip-text text-transparent bg-gradient-to-r ${team.color}`}>
                           {team.name} թիմը
                         </span>
-                        <span className="text-xl text-sky-700 font-bold">
+                        <span className="text-[32px] text-sky-700 font-bold">
                           ({leaderInfo.score} միավոր)
                         </span>
                       </div>
